@@ -1,4 +1,7 @@
+drop database if exists `graduation`;
+create database if not exists `graduation`;
 use graduation;
+
 drop table if exists `sys_user`;
 create table `sys_user`(
     `id` bigint not null primary key auto_increment comment '主键',
@@ -75,11 +78,13 @@ insert into `indicator`(name, unit, standard_range) values
     ('尿酸（UA）', 'mmol/L', '201 ~ 420;150 ~ 375')
 ;
 
+drop table if exists `elder_indicator`;
 create table `elder_indicator`(
     `id` bigint not null primary key auto_increment comment '主键',
     `elder_id` bigint not null comment '老人id',
     `indicator_id` bigint not null comment '指标id',
     `value` decimal not null comment '指标值',
+    `check_time` date not null comment '体检时间',
     `create_time` datetime not null default now() comment '创建时间',
     `update_time` datetime not null default now() comment '更新时间',
     `del_flag` tinyint not null default 0 comment '删除标志，1标识删除'

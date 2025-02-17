@@ -8,6 +8,11 @@ import com.aliyun.teautil.models.RuntimeOptions;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 用于校验用户身份证和名字的一个工具类，但是需要阿里云企业账户才可以使用，故废弃
+ * 文档 https://help.aliyun.com/zh/id-verification/?spm=a2c4g.11186623.0.0.7fe8b5bfet1ngP
+ */
+@Deprecated
 public class IdentifyUtils {
 
     public static void main(String[] args_) throws Exception {
@@ -15,9 +20,9 @@ public class IdentifyUtils {
         try {
             // 构建request。
             Id2MetaVerifyRequest request = new Id2MetaVerifyRequest();
-            request.paramType = "normal";
-            request.userName = "450521200310069177";
-            request.identifyNum = "陈权";
+            request.paramType = "normal"; // 加密手段，不加密，若要加密请指定并用指定加密手段加密下面俩参数
+            request.userName = "身份证号码";
+            request.identifyNum = "你的名字";
             // 自动路由服务。
             Id2MetaVerifyResponse response = IdentifyUtils.id2MetaVerifyAutoRoute(request);
             String ret = com.aliyun.teautil.Common.toJSONString(com.aliyun.teautil.Common.toMap(response));

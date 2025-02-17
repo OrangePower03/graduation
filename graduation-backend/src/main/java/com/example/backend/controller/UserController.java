@@ -32,4 +32,6 @@ public class UserController extends BaseController {
         userService.logout();
         return ok();
     }
+
+
 }

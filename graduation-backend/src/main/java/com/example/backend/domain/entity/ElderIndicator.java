@@ -1,10 +1,9 @@
 package com.example.backend.domain.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -21,6 +20,9 @@ public class ElderIndicator extends BaseEntity {
     private Long indicatorId;
 
     //指标值
-    private BigDecimal value;
+    private Double value;
+
+    //体检时间
+    private Date checkTime;
 }
 

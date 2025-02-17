@@ -158,6 +158,7 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         wrapper.eq(SysUser::getIdNumber, idNumber).eq(SysUser::getName, name);
         SysUser user = this.getOne(wrapper);
         AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
+        AssertUtils.isTrue(ELDER_ROLE_ID.equals(user.getRoleId()), AppHttpCode.USER_NOT_FOUND_ERROR);
         return BeanCopyUtils.copyBean(user, PersonVO.class);
     }
 }
