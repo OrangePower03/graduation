@@ -36,4 +36,8 @@ public class ObjectUtils {
         AssertUtils.nonNull(obj, httpCode);
         return obj;
     }
+
+    public static <T> T requireNonNullElse(T obj, T defaultValue) {
+        return Objects.requireNonNullElse(obj, defaultValue);
+    }
 }

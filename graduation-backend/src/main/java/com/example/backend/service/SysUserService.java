@@ -31,10 +31,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.example.backend.constants.UserConstants.*;
 
@@ -142,8 +139,26 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         return BeanCopyUtils.copyBean(relationUser, UserInfoVO.class);
     }
 
-    public @NonNull PageVO<PersonVO> listRelationPerson() {
-        return new PageVO<>();
+    public @NonNull List<PersonVO> listRelationPerson(@NonNull Integer status) {
+        Long userId = SecurityUtils.getUserId();
+        Long roleId = SecurityUtils.getUserRole().getId();
+        List<Long> idList;
+        if (YOUNGSTER_ROLE_ID.equals(roleId)) {
+            idList = this.baseMapper.getElderIdByYoungsterId(userId, status);
+        } else {
+            idList = this.baseMapper.getYoungsterIdByElderId(userId, status);
+        }
+        List<SysUser> relationUsers = this.listByIds(idList);
+        return BeanCopyUtils.copyBeans(relationUsers, PersonVO.class);
+    }
+
+    public @NonNull PersonVO getExactPerson(String idNumber, String name) {
+        AssertUtils.isTrue(StringUtils.isMatch(idNumber, ID_NUMBER_FORMAT), AppHttpCode.ID_NUMBER_FORMAT_ERROR);
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysUser::getIdNumber, idNumber).eq(SysUser::getName, name);
+        SysUser user = this.getOne(wrapper);
+        AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
+        return BeanCopyUtils.copyBean(user, PersonVO.class);
     }
 }
 

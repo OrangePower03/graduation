@@ -1,19 +1,23 @@
 package com.example.backend.controller;
 
+import com.example.backend.constants.UserConstants;
 import com.example.backend.domain.vo.PageVO;
 import com.example.backend.domain.vo.user.PersonVO;
 import com.example.backend.domain.vo.user.UserInfoVO;
 import com.example.backend.service.SysUserService;
+import com.example.backend.utils.object.ObjectUtils;
 import com.example.backend.utils.web.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.backend.utils.web.ResponseResult.ok;
+import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/person")
-public class PersonController {
+public class PersonController extends BaseController {
     @Autowired
     private SysUserService personService;
 
@@ -31,7 +35,15 @@ public class PersonController {
 
     @PreAuthorize("@MA.isElderOrYoungster()")
     @GetMapping
-    public ResponseResult<PageVO<PersonVO>> listRelationPerson() {
-        return ok(personService.listRelationPerson());
+    public ResponseResult<List<PersonVO>> listRelationPerson(@RequestParam(value = "status", required = false) Integer status) {
+        return ok(personService.listRelationPerson(ObjectUtils.requireNonNullElse(status, UserConstants.RELATION_STATUS_NORMAL)));
+    }
+
+    @PreAuthorize("@MA.isYoungster()")
+    @GetMapping
+    public ResponseResult<PersonVO> getExactPerson(@RequestParam(value = "idNumber") String idNumber,
+                                                   @RequestParam(value = "name") String name) {
+
+        return ok(personService.getExactPerson(idNumber, name));
     }
 }

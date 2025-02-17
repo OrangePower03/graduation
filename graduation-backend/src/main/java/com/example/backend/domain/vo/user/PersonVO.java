@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonVO extends BaseVO {
+    private Long id;
+
     private String name;
 
     private String idNumber;

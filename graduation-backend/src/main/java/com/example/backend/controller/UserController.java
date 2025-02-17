@@ -6,7 +6,6 @@ import com.example.backend.domain.vo.user.UserInfoVO;
 import com.example.backend.domain.vo.user.RegisterVO;
 import com.example.backend.service.SysUserService;
 import com.example.backend.utils.web.ResponseResult;
-import static com.example.backend.utils.web.ResponseResult.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class UserController extends BaseController {
     @Autowired
     private SysUserService userService;
 

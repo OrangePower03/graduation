@@ -13,4 +13,10 @@
     <delete id="removeRelation">
         delete from people_relation where youngster_id = #{youngsterId} and elder_id = #{elderId}
     </delete>
+    <select id="getElderIdByYoungsterId" resultType="java.lang.Long">
+        select elder_id from people_relation where youngster_id = #{youngsterId} and status = #{status}
+    </select>
+    <select id="getYoungsterIdByElderId" resultType="java.lang.Long">
+        select youngster_id from people_relation where elder_id = #{elderId} and status = #{status}
+    </select>
 </mapper>

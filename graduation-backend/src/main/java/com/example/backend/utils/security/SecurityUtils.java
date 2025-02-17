@@ -47,6 +47,14 @@ public class SecurityUtils {
         return PermissionConstants.ADMIN_KEY.equals(getUserPermission());
     }
 
+    public static boolean isYoungster() {
+        return PermissionConstants.YOUNGSTER_KEY.equals(getUserPermission());
+    }
+
+    public static boolean isElder() {
+        return PermissionConstants.ELDER_KEY.equals(getUserPermission());
+    }
+
     public static SysRole getUserRole() {
         return getLoginUser().getRole();
     }

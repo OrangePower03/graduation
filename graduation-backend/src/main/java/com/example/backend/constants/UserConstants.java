@@ -12,6 +12,9 @@ public interface UserConstants {
 
     Integer ELDER_AGE_BOUNDARY = 50;
 
+    Integer RELATION_STATUS_NORMAL = 0;
+    Integer RELATION_STATUS_WAITING = 1;
+
     Integer USER_STATUS_NORMAL = 0;
     Integer USER_STATUS_BLOCK = 1;
     Integer USER_STATUS_MONITORING = 2;
