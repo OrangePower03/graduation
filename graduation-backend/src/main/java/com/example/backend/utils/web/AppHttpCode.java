@@ -23,7 +23,7 @@ public class AppHttpCode {
     public static final AppHttpCode USERNAME_EXISTS = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户名已存在");
     public static final AppHttpCode ID_NUMBER_EXISTS = new AppHttpCode(HttpStatus.BAD_REQUEST,"身份证已存在");
     public static final AppHttpCode REQUEST_BODY_IS_NULL = new AppHttpCode(HttpStatus.BAD_REQUEST, "请求体为空");
-    public static final AppHttpCode REQUEST_DATA_FIELD_IS_NULL = new AppHttpCode(HttpStatus.BAD_REQUEST, "请求体中数据不完全");
+    public static final AppHttpCode REQUEST_DATA_FIELD_IS_NULL = new AppHttpCode(HttpStatus.BAD_REQUEST, "请求数据不完全");
     public static final AppHttpCode USERNAME_OR_PASSWORD_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户名或密码错误");
     public static final AppHttpCode RELATION_USER_ROLE_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"关系绑定错误，年轻人和年轻人或者老年人和老年人间不需要绑定关系");
 
@@ -33,6 +33,7 @@ public class AppHttpCode {
 
     public static final AppHttpCode USER_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该用户");
     public static final AppHttpCode RELATION_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"构建关系失败，未找到对应关系，请询问是否申请");
+    public static final AppHttpCode INDICATOR_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该指标");
 
     public static final AppHttpCode RELATION_EXISTS_ERROR = new AppHttpCode(HttpStatus.CONFLICT,"构建关系失败，可能已申请，请指导长辈确认绑定");
 

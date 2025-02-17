@@ -16,6 +16,4 @@ public class ElderIndicatorDTO extends BaseDTO {
     private Long id; // 指标的外键id
 
     private Double value;
-
-    private Date checkTime;
 }

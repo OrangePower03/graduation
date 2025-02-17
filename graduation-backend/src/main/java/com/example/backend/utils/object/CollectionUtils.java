@@ -48,6 +48,11 @@ public class CollectionUtils extends ObjectUtils {
         return collection.stream().collect(Collectors.toMap(keyMapper, valueMapper));
     }
 
+    public static <T, K> Map<K, T> toMap(Collection<T> collection,
+                                            Function<? super T, ? extends K> keyMapper) {
+        return collection.stream().collect(Collectors.toMap(keyMapper, Function.identity()));
+    }
+
     public static <T> T[] toArray(Collection<T> col, T[] array) {
         return col.toArray(array);
     }

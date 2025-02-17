@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.domain.dto.indicator.PatchElderIndicatorDTO;
 import com.example.backend.domain.vo.indicator.IndicatorVO;
+import com.example.backend.service.ElderIndicatorService;
 import com.example.backend.service.IndicatorService;
 import com.example.backend.utils.web.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class IndicatorController extends BaseController {
     @Autowired
     private IndicatorService indicatorService;
 
+    @Autowired
+    private ElderIndicatorService elderIndicatorService;
+
     @PreAuthorize("@MA.isAdmin()")
     @GetMapping
     public ResponseResult<List<IndicatorVO>> listIndicator() {
@@ -24,8 +28,7 @@ public class IndicatorController extends BaseController {
 
     @PreAuthorize("@MA.isAdmin()")
     @PostMapping("/elder")
-    public ResponseResult<Void> addElderIndicators(@RequestBody PatchElderIndicatorDTO indicators) {
-        indicatorService.addElderIndicators(indicators);
-        return ok();
+    public ResponseResult<Integer> addElderIndicators(@RequestBody PatchElderIndicatorDTO indicators) {
+        return ok(elderIndicatorService.addElderIndicators(indicators));
     }
 }
