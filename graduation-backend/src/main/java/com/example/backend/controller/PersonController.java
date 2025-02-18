@@ -40,7 +40,7 @@ public class PersonController extends BaseController {
     }
 
     @PreAuthorize("@MA.isYoungster()")
-    @GetMapping
+    @GetMapping("/select")
     public ResponseResult<PersonVO> getExactPerson(@RequestParam(value = "idNumber") String idNumber,
                                                    @RequestParam(value = "name") String name) {
 

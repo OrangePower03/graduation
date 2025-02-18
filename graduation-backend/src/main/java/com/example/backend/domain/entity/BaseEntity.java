@@ -16,10 +16,10 @@ public abstract class BaseEntity implements Serializable {
     private Long id;
 
     //创建时间，日期时间类型，默认当前时间
-    private Date createdAt;
+    private Date createTime;
 
     //更新时间，日期时间类型，默认当前时间，每次更新自动更新
-    private Date updatedAt;
+    private Date updateTime;
 
     //是否删除，一位字符存储，删除为1，未删除为0，默认未删除
     private Integer delFlag;
