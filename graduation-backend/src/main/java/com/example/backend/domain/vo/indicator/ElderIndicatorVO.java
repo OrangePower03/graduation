@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -23,5 +22,4 @@ public class ElderIndicatorVO extends BaseVO {
 
     private String standardRange;
 
-    private Date checkTime;
 }
