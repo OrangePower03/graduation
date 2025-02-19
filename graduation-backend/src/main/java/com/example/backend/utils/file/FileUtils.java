@@ -2,7 +2,6 @@ package com.example.backend.utils.file;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FileUtils {
     public static InputStream getInputStream(String path) {
@@ -50,18 +49,4 @@ public class FileUtils {
         System.out.println(dataMap);
         return dataMap;
     }
-
-    public static void main(String[] args) {
-        try {
-            String[] str = new String(getResourcesInputStream("data.txt").readAllBytes()).split("\r\n");
-            Map<String, Map<String, String>> indicatorMap = getDataByPrefixAndFormat(str, "-");
-            Map<String, Map<String, String>> symptomMap = getDataByPrefixAndFormat(str, "+");
-            Map<String, Map<String, String>> foodMap = getDataByPrefixAndFormat(str, "/");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-
 }

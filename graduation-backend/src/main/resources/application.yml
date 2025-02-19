@@ -5,7 +5,14 @@ spring:
       username: root
       password: 123123
       driver-class-name: com.mysql.cj.jdbc.Driver
-
+  neo4j:
+    uri: bolt://127.0.0.1:7687
+    authentication:
+      username: neo4j
+      password: 123123123
+  data:
+    neo4j:
+      database: neo4j
 
 mybatis-plus:
   config-location: classpath:mybatis.xml
