@@ -25,7 +25,7 @@ public class TestRunner implements ApplicationRunner {
 //        for (Indicator indicator : indicators) {
 //            System.out.println(indicator.getName() + "这个数值过低和过高的危害吗？可以通过什么方式来补救呢，可以结合饮食和生活习性讲解");
 //        }
-        controller.graph();
+        controller.graph(true);
 
     }
 }

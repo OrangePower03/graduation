@@ -37,7 +37,7 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
 
     public @NonNull List<IndicatorVO> listIndicator() {
         Map<String, Object> map = redisCache.getWithExpire(RedisConstants.INDICATOR_MAP_KEY, RedisConstants.INDICATOR_MAP_EXPIRE);
-        return ObjectUtils.isNull(map) ? getByDatabaseAndCache() :
+        return CollectionUtils.isEmpty(map) ? getByDatabaseAndCache() :
                 map.values().stream()
                     .map(IndicatorVO.class::cast)
                     .collect(Collectors.toList());

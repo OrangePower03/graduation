@@ -48,11 +48,11 @@
             <artifactId>spring-boot-starter-data-neo4j</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.neo4j</groupId>-->
-<!--            <artifactId>neo4j-cypher-dsl</artifactId>-->
-<!--            <version>2024.2.0</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-cypher-dsl</artifactId>
+            <version>2024.1.0</version>
+        </dependency>
 
         <dependency>
 			<groupId>mysql</groupId>
