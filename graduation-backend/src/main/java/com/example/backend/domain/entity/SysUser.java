@@ -37,6 +37,9 @@ public class SysUser extends BaseEntity {
     //用户的年龄
     private Integer age;
 
+    //用户的性别，0男，1女
+    private Integer sex;
+
     //角色id外键
     private Long roleId;
 

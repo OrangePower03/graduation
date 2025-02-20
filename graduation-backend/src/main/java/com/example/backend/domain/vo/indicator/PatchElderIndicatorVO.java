@@ -18,7 +18,4 @@ public class PatchElderIndicatorVO extends BaseVO {
 
     private Date checkTime;
 
-    private List<ElderIndicatorVO> elderIndicators;
-
-    private List<String> suggestions;
 }

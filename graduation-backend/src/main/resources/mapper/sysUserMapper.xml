@@ -19,4 +19,7 @@
     <select id="getYoungsterIdByElderId" resultType="java.lang.Long">
         select youngster_id from people_relation where elder_id = #{elderId} and status = #{status}
     </select>
+    <select id="containsRelations" resultType="java.lang.Integer">
+        select count(*) from people_relation where youngster_id = #{youngsterId} and elder_id = #{elderId} and status = 0
+    </select>
 </mapper>

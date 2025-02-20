@@ -20,4 +20,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     List<Long> getYoungsterIdByElderId(@Param("elderId") Long elderId, @Param("status") Integer status);
 
+    int containsRelations(@Param("youngsterId") Long youngsterId, @Param("elderId") Long elderId);
+
 }

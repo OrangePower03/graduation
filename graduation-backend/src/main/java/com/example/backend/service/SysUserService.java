@@ -75,6 +75,7 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         user.setPassword(passwordEncoder.encode(register.getPassword()));
         user.setAge(age);
         user.setRoleId(age >= ELDER_AGE_BOUNDARY ? ELDER_ROLE_ID : YOUNGSTER_ROLE_ID);
+        user.setSex(register.getIdNumber().substring(16, 17).matches("^[13579]$") ? USER_SEX_MAN : USER_SEX_WOMAN);
         save(user);
         return BeanCopyUtils.copyBean(user, RegisterVO.class);
     }

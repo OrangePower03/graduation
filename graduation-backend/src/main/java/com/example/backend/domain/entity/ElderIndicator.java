@@ -22,6 +22,9 @@ public class ElderIndicator extends BaseEntity {
     //指标值
     private Double value;
 
+    //指标是否正常，正常为0，异常为1
+    private Integer normal;
+
     //体检时间
     private Date checkTime;
 }

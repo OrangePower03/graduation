@@ -15,6 +15,7 @@ public class AppHttpCode {
 
     // 客户端错误
     public static final AppHttpCode PHONE_FORMAT_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"手机格式错误");
+    public static final AppHttpCode USER_SEX_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户性别错误");
     public static final AppHttpCode USERNAME_FORMAT_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户名格式错误");
     public static final AppHttpCode PASSWORD_FORMAT_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"密码格式错误");
     public static final AppHttpCode ID_NUMBER_FORMAT_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"身份证格式错误");

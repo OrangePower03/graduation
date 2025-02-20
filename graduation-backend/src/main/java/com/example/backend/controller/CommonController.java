@@ -29,7 +29,7 @@ import static com.example.backend.utils.file.FileUtils.*;
 @Slf4j
 @RestController
 @RequestMapping("/common")
-public class CommonController extends BaseController{
+public class CommonController extends BaseController {
     @Autowired
     private Neo4jService neo4jService;
 

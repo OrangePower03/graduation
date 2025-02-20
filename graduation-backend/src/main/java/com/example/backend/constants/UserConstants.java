@@ -18,4 +18,11 @@ public interface UserConstants {
     Integer USER_STATUS_NORMAL = 0;
     Integer USER_STATUS_BLOCK = 1;
     Integer USER_STATUS_MONITORING = 2;
+
+    Integer USER_SEX_WOMAN = 0;
+    Integer USER_SEX_MAN = 1;
+
+    Integer USER_BODY_NORMAL = 0;
+    Integer USER_BODY_ABNORMALITY = 1;
+
 }

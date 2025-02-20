@@ -6,14 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ElderIndicatorDTO extends BaseDTO {
-    private Long id; // 指标的外键id
+    private Long indicatorId; // 指标的外键id
 
     private Double value;
 }
