@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.domain.dto.indicator.PatchElderIndicatorDTO;
 import com.example.backend.domain.vo.PageVO;
+import com.example.backend.domain.vo.indicator.ElderIndicatorDetailVO;
 import com.example.backend.domain.vo.indicator.IndicatorVO;
 import com.example.backend.domain.vo.indicator.PatchElderIndicatorVO;
 import com.example.backend.service.ElderIndicatorService;
@@ -38,13 +39,19 @@ public class IndicatorController extends BaseController {
 
     @PreAuthorize("@MA.isYoungster()")
     @GetMapping("/elder/{id}")
-    public ResponseResult<PageVO<PatchElderIndicatorVO>> getElderIndicators(@PathVariable("id") Long elderId, Date startTime) {
+    public ResponseResult<PatchElderIndicatorVO> getElderIndicators(@PathVariable("id") Long elderId, Date startTime) {
         return ok(elderIndicatorService.getElderIndicators(elderId, startTime));
     }
 
     @PreAuthorize("@MA.isElder()")
     @GetMapping("/elder")
-    public ResponseResult<PageVO<PatchElderIndicatorVO>> getElderIndicators(Date startTime) {
+    public ResponseResult<PatchElderIndicatorVO> getElderIndicators(Date startTime) {
         return ok(elderIndicatorService.getElderIndicators(SecurityUtils.getUserId(), startTime));
+    }
+
+    @PreAuthorize("@MA.isYoungster()")
+    @GetMapping("/elder/detail/{elderId}")
+    public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@PathVariable Long elderId, @RequestParam(value = "checkTime") Date checkTime) {
+        return ok(elderIndicatorService.getElderIndicatorDetail(elderId, checkTime));
     }
 }

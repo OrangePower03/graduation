@@ -1,5 +1,6 @@
 package com.example.backend.filter;
 
+import com.example.backend.constants.HttpConstants;
 import com.example.backend.constants.HttpStatus;
 import com.example.backend.constants.RedisConstants;
 import com.example.backend.security.LoginUser;
@@ -27,7 +28,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader("Authentication");
+        String token = request.getHeader(HttpConstants.HEADER_AUTHENTICATION);
         if (ObjectUtils.nonNull(token)) {
             Claims claims;
             try {

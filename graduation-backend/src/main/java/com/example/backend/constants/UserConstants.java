@@ -22,7 +22,8 @@ public interface UserConstants {
     Integer USER_SEX_WOMAN = 0;
     Integer USER_SEX_MAN = 1;
 
-    Integer USER_BODY_NORMAL = 0;
-    Integer USER_BODY_ABNORMALITY = 1;
+    Integer USER_INDICATOR_NORMAL = 0;
+    Integer USER_INDICATOR_HIGH = 1;
+    Integer USER_INDICATOR_LOW = 2;
 
 }

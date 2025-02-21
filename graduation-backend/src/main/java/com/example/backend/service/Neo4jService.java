@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.domain.graph.BaseNode;
+import com.example.backend.domain.vo.graph.SuggestionDetailVO;
 import org.neo4j.cypherdsl.core.Node;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Result;
@@ -59,5 +60,10 @@ public class Neo4jService {
     public void deleteAll() {
         String cql = "MATCH (n) DETACH DELETE n";
         executeCql(List.of(cql));
+    }
+
+    // 获取建议，填充数据
+    public SuggestionDetailVO getSuggestion(Long indicatorId, Integer normal) {
+        return null;
     }
 }

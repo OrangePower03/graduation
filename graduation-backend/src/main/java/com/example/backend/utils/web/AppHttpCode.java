@@ -14,6 +14,7 @@ public class AppHttpCode {
     public static final AppHttpCode NETWORK_ERROR = new AppHttpCode(HttpStatus.SYSTEM_ERROR,"网络异常，请稍后再试");
 
     // 客户端错误
+    public static final AppHttpCode PAGE_PARAM_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"分页参数数据范围错误");
     public static final AppHttpCode PHONE_FORMAT_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"手机格式错误");
     public static final AppHttpCode USER_SEX_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户性别错误");
     public static final AppHttpCode USERNAME_FORMAT_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户名格式错误");
@@ -32,6 +33,7 @@ public class AppHttpCode {
 
     public static final AppHttpCode PERMISSION_DENIED_ERROR = new AppHttpCode(HttpStatus.FORBIDDEN,"权限不足，请向管理员反馈");
 
+    public static final AppHttpCode PAGE_PARAM_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"分页参数不完全");
     public static final AppHttpCode USER_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该用户");
     public static final AppHttpCode RELATION_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"构建关系失败，未找到对应关系，请询问是否申请");
     public static final AppHttpCode INDICATOR_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该指标");

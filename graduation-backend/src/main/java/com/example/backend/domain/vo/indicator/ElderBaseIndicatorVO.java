@@ -6,20 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ElderIndicatorVO extends BaseVO {
-    private Long id; // 指标的外键id
+public class ElderBaseIndicatorVO extends BaseVO {
+    Date checkTime;
 
-    private String name;
-
-    private Double value;
-
-    private String unit;
-
-    private String standardRange;
-
+    Integer normal; // 所有的指标是否正常
 }

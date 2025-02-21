@@ -2,17 +2,12 @@ package com.example.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.backend.annotation.VerifyRequestBody;
 import com.example.backend.constants.RedisConstants;
 import com.example.backend.constants.UserConstants;
 import com.example.backend.domain.dto.indicator.ElderIndicatorDTO;
-import com.example.backend.domain.dto.indicator.PatchElderIndicatorDTO;
-import com.example.backend.domain.entity.ElderIndicator;
 import com.example.backend.domain.entity.Indicator;
-import com.example.backend.domain.entity.SysUser;
 import com.example.backend.domain.vo.indicator.IndicatorVO;
 import com.example.backend.mapper.IndicatorMapper;
-import com.example.backend.mapper.SysUserMapper;
 import com.example.backend.utils.AssertUtils;
 import com.example.backend.utils.bean.BeanCopyUtils;
 import com.example.backend.utils.object.CollectionUtils;
@@ -24,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.util.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,12 +39,7 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
                     .collect(Collectors.toList());
     }
 
-    public boolean existsIndicator(@NonNull Long id) {
-        return ObjectUtils.nonNull(getIndicator(id));
-    }
-
-    @Nullable
-    public IndicatorVO getIndicator(@NonNull Long id) {
+    public @NonNull IndicatorVO getIndicator(@NonNull Long id) {
         IndicatorVO res;
         if (ObjectUtils.nonNull(res = indicatorMap.get(id.toString()))) return res;
         Map<String, Object> map = redisCache.get(RedisConstants.INDICATOR_MAP_KEY);
@@ -62,20 +50,27 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
         } else {
             getByDatabaseAndCache();
         }
-        return indicatorMap.get(id.toString());
+        res = indicatorMap.get(id.toString());
+        AssertUtils.nonNull(res, AppHttpCode.INDICATOR_NOT_FOUND_ERROR);
+        return res;
     }
 
-    public Integer isNormal(Integer elderSex, ElderIndicatorDTO elderIndicator) {
+    public Integer getNormalStatus(Integer elderSex, ElderIndicatorDTO elderIndicator) {
         IndicatorVO indicator = getIndicator(elderIndicator.getIndicatorId());
-        AssertUtils.nonNull(indicator, AppHttpCode.INDICATOR_NOT_FOUND_ERROR);
         AssertUtils.isTrue(UserConstants.USER_SEX_MAN.equals(elderSex) || UserConstants.USER_SEX_WOMAN.equals(elderSex), AppHttpCode.USER_SEX_ERROR);
-        assert indicator != null;
         String[] sexIndicator = indicator.getStandardRange().split(";");
         String indicatorRange = sexIndicator.length == 2 ? sexIndicator[elderSex] : sexIndicator[0];
         String[] indicatorArr = indicatorRange.split(";");
         Double value = elderIndicator.getValue();
-        return Double.parseDouble(indicatorArr[0].strip()) < value && value < Double.parseDouble(indicatorArr[1].strip()) ?
-                UserConstants.USER_BODY_NORMAL : UserConstants.USER_BODY_ABNORMALITY;
+        double lowest = Double.parseDouble(indicatorArr[0].strip());
+        double highest = Double.parseDouble(indicatorArr[1].strip());
+        if (lowest > value) {
+            return UserConstants.USER_INDICATOR_LOW;
+        } else if (value > highest) {
+            return UserConstants.USER_INDICATOR_HIGH;
+        } else {
+            return UserConstants.USER_INDICATOR_NORMAL;
+        }
     }
 
     private List<IndicatorVO> getByDatabaseAndCache() {

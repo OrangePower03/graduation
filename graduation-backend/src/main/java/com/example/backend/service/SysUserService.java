@@ -10,6 +10,7 @@ import com.example.backend.domain.dto.user.RegisterDTO;
 import com.example.backend.domain.entity.SysRole;
 import com.example.backend.domain.entity.SysUser;
 import com.example.backend.domain.vo.PageVO;
+import com.example.backend.domain.vo.indicator.ElderIndicatorDetailVO;
 import com.example.backend.domain.vo.user.PersonVO;
 import com.example.backend.domain.vo.user.UserInfoVO;
 import com.example.backend.domain.vo.user.RegisterVO;
