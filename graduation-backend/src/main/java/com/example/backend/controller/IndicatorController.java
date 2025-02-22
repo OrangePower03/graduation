@@ -54,4 +54,10 @@ public class IndicatorController extends BaseController {
     public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@PathVariable Long elderId, @RequestParam(value = "checkTime") Date checkTime) {
         return ok(elderIndicatorService.getElderIndicatorDetail(elderId, checkTime));
     }
+
+    @PreAuthorize("@MA.isElder()")
+    @GetMapping("/elder/detail")
+    public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@RequestParam(value = "checkTime") Date checkTime) {
+        return ok(elderIndicatorService.getElderIndicatorDetail(SecurityUtils.getUserId(), checkTime));
+    }
 }

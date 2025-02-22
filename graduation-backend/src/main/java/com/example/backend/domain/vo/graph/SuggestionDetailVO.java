@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -18,7 +20,7 @@ public class SuggestionDetailVO extends BaseVO {
 
     private String lifeSuggestion; // 生活建议
 
-    private FoodVO recommendFoods; // 推荐食物
+    private List<FoodVO> recommendFoods; // 推荐食物
 
-    private FoodVO unrecommendFoods; // 不推荐食物
+    private List<FoodVO> unrecommendFoods; // 不推荐食物
 }

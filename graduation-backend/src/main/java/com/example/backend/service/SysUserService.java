@@ -7,6 +7,7 @@ import com.example.backend.annotation.VerifyRequestBody;
 import com.example.backend.constants.RedisConstants;
 import com.example.backend.domain.dto.user.LoginDTO;
 import com.example.backend.domain.dto.user.RegisterDTO;
+import com.example.backend.domain.dto.user.RoleDTO;
 import com.example.backend.domain.entity.SysRole;
 import com.example.backend.domain.entity.SysUser;
 import com.example.backend.domain.vo.PageVO;
@@ -162,6 +163,15 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
         AssertUtils.isTrue(ELDER_ROLE_ID.equals(user.getRoleId()), AppHttpCode.USER_NOT_FOUND_ERROR);
         return BeanCopyUtils.copyBean(user, PersonVO.class);
+    }
+
+    public @NonNull List<UserInfoVO> getUser(String username, String name, String phone, Long roleId) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.nonNull(username), SysUser::getUsername, username);
+        wrapper.like(StringUtils.nonNull(name), SysUser::getName, name);
+        wrapper.eq(StringUtils.nonNull(phone), SysUser::getPhone, phone);
+        wrapper.eq(StringUtils.nonNull(roleId), SysUser::getRoleId, roleId);
+        return null;
     }
 }
 
