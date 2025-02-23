@@ -13,6 +13,7 @@ import com.example.backend.utils.object.ObjectUtils;
 import com.example.backend.utils.web.AppHttpCode;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
+import reactor.util.annotation.Nullable;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> implemen
         save(sysRole);
     }
 
-    public @NonNull List<RoleVO> getRole(String name) {
+    public @NonNull List<RoleVO> getRole(@Nullable String name) {
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(ObjectUtils.nonNull(name), SysRole::getName, name);
         return BeanCopyUtils.copyBeans(list(wrapper), RoleVO.class);
@@ -34,9 +35,11 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> implemen
     }
 
     public void updateRole(Long id, RoleDTO role) {
-        SysRole sysRole = BeanCopyUtils.copyBean(role, SysRole.class);
-        sysRole.setId(id);
-        AssertUtils.isTrue(updateById(sysRole), AppHttpCode.ROLE_NOT_FOUND_ERROR);
+        SysRole sysRole = this.getById(id);
+        AssertUtils.nonNull(sysRole, AppHttpCode.ROLE_NOT_FOUND_ERROR);
+        sysRole.setName(ObjectUtils.requireNonNullElse(role.getName(), sysRole.getName()));
+        sysRole.setPermissionKey(ObjectUtils.requireNonNullElse(role.getPermissionKey(), sysRole.getPermissionKey()));
+        updateById(sysRole);
     }
 }
 

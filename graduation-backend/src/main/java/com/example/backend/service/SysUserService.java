@@ -1,25 +1,26 @@
 package com.example.backend.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.backend.annotation.VerifyRequestBody;
 import com.example.backend.constants.RedisConstants;
 import com.example.backend.domain.dto.user.LoginDTO;
 import com.example.backend.domain.dto.user.RegisterDTO;
-import com.example.backend.domain.dto.user.RoleDTO;
 import com.example.backend.domain.entity.SysRole;
 import com.example.backend.domain.entity.SysUser;
 import com.example.backend.domain.vo.PageVO;
-import com.example.backend.domain.vo.indicator.ElderIndicatorDetailVO;
 import com.example.backend.domain.vo.user.PersonVO;
+import com.example.backend.domain.vo.user.RoleVO;
 import com.example.backend.domain.vo.user.UserInfoVO;
 import com.example.backend.domain.vo.user.RegisterVO;
-import com.example.backend.mapper.SysRoleMapper;
 import com.example.backend.mapper.SysUserMapper;
 import com.example.backend.security.LoginUser;
 import com.example.backend.utils.AssertUtils;
+import com.example.backend.utils.PageUtils;
 import com.example.backend.utils.bean.BeanCopyUtils;
+import com.example.backend.utils.object.CollectionUtils;
 import com.example.backend.utils.object.StringUtils;
 import com.example.backend.utils.redis.StringRedisUtils;
 import com.example.backend.utils.security.JwtUtils;
@@ -48,6 +49,9 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
     @Autowired
     private StringRedisUtils redisCache;
 
+    @Autowired
+    private SysRoleService roleService;
+
     @VerifyRequestBody
     public @NonNull RegisterVO register(RegisterDTO register) {
         // 校验格式
@@ -56,7 +60,7 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         AssertUtils.isTrue(StringUtils.isMatch(register.getPassword(), PASSWORD_FORMAT), AppHttpCode.PASSWORD_FORMAT_ERROR);
         AssertUtils.isTrue(StringUtils.isMatch(register.getIdNumber(), ID_NUMBER_FORMAT), AppHttpCode.ID_NUMBER_FORMAT_ERROR);
         AssertUtils.isEquals(register.getPassword(), register.getRPassword(), AppHttpCode.PASSWORD_NOT_EQUALS_ERROR);
-        // todo 校验名字和身份证 ?
+        // todo 校验名字和身份证，需要企业用户才能调用接口
 
         // 校验用户名、手机、身份证号是否已存在
         LambdaQueryWrapper<SysUser> userWrapper = new LambdaQueryWrapper<>();
@@ -165,13 +169,29 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         return BeanCopyUtils.copyBean(user, PersonVO.class);
     }
 
-    public @NonNull List<UserInfoVO> getUser(String username, String name, String phone, Long roleId) {
+    public @NonNull PageVO<UserInfoVO> getUser(String username, String name, String phone, Long roleId) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.nonNull(username), SysUser::getUsername, username);
         wrapper.like(StringUtils.nonNull(name), SysUser::getName, name);
         wrapper.eq(StringUtils.nonNull(phone), SysUser::getPhone, phone);
         wrapper.eq(StringUtils.nonNull(roleId), SysUser::getRoleId, roleId);
-        return null;
+        Page<SysUser> page = this.page(PageUtils.getPage(), wrapper);
+        PageVO<UserInfoVO> res = new PageVO<>(page, UserInfoVO.class);
+        Map<Long, String> roleMap = CollectionUtils.toMap(roleService.getRole(null), RoleVO::getId, RoleVO::getName);
+        for (UserInfoVO user : res.getRows()) {
+            user.setRoleName(roleMap.get(user.getRoleId()));
+        }
+        return res;
+    }
+
+    public void deleteUser(Long id) {
+        this.removeById(id);
+    }
+
+    public void updateUserState(Long id) {
+        SysUser user = this.getById(id);
+        AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
+        user.setStatus(USER_STATUS_BLOCK);
+        this.save(user);
     }
 }
-

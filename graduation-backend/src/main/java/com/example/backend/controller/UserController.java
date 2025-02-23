@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.domain.dto.user.LoginDTO;
 import com.example.backend.domain.dto.user.RegisterDTO;
 import com.example.backend.domain.dto.user.RoleDTO;
+import com.example.backend.domain.vo.PageVO;
 import com.example.backend.domain.vo.user.RoleVO;
 import com.example.backend.domain.vo.user.UserInfoVO;
 import com.example.backend.domain.vo.user.RegisterVO;
@@ -19,9 +20,6 @@ import java.util.List;
 public class UserController extends BaseController {
     @Autowired
     private SysUserService userService;
-
-    @Autowired
-    private SysRoleService roleService;
 
     @PostMapping("/register")
     public ResponseResult<RegisterVO> register(@RequestBody RegisterDTO register) {
@@ -40,50 +38,22 @@ public class UserController extends BaseController {
     }
 
     @PreAuthorize("@MA.isAdmin()")
-    @PostMapping("/role")
-    public ResponseResult<Void> addRole(@RequestBody RoleDTO role) {
-        roleService.addRole(role);
-        return ok();
-    }
-
-    @PreAuthorize("@MA.isAdmin()")
-    @GetMapping("/role")
-    public ResponseResult<List<RoleVO>> getRole(String name) {
-        return ok(roleService.getRole(name));
-    }
-
-    @PreAuthorize("@MA.isAdmin()")
-    @DeleteMapping("/role/{id}")
-    public ResponseResult<Void> deleteRole(@PathVariable Long id) {
-        roleService.deleteRole(id);
-        return ok();
-    }
-
-    @PutMapping("/role/{id}")
-    public ResponseResult<Void> updateRole(@PathVariable Long id, @RequestBody RoleDTO role) {
-        roleService.updateRole(id, role);
-        return ok();
-    }
-
-    @PreAuthorize("@MA.isAdmin()")
     @GetMapping("/user")
-    public ResponseResult<List<UserInfoVO>> getUser(String username, String name, String phone, Long roleId) {
+    public ResponseResult<PageVO<UserInfoVO>> getUser(String username, String name, String phone, Long roleId) {
         return ok(userService.getUser(username, name, phone, roleId));
     }
 
     @PreAuthorize("@MA.isAdmin()")
     @DeleteMapping("/user/{id}")
     public ResponseResult<Void> deleteUser(@PathVariable Long id) {
-//        userService.deleteUser(id);
+        userService.deleteUser(id);
         return ok();
     }
 
     @PutMapping("/user/{id}")
     public ResponseResult<Void> updateUserState(@PathVariable Long id) {
-//        userService.updateUser(id);
+        userService.updateUserState(id);
         return ok();
     }
-
-
 
 }
