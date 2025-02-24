@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoVO extends BaseVO {
+public class ListUserVO extends BaseVO {
     private Long id;
 
     private String username;
@@ -29,5 +29,5 @@ public class UserInfoVO extends BaseVO {
 
     private String roleName;
 
-    private String token;
+    private Integer status;
 }
