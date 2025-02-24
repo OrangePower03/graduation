@@ -7,18 +7,23 @@
     <insert id="addRelation">
         insert into people_relation (youngster_id, elder_id, status) values (#{youngsterId}, #{elderId}, 1)
     </insert>
+
     <update id="affirmRelation">
-    update people_relation set status = 0 where youngster_id = #{youngsterId} and elder_id = #{elderId}
+        update people_relation set status = 0 where youngster_id = #{youngsterId} and elder_id = #{elderId}
     </update>
+
     <delete id="removeRelation">
         delete from people_relation where youngster_id = #{youngsterId} and elder_id = #{elderId}
     </delete>
+
     <select id="getElderIdByYoungsterId" resultType="java.lang.Long">
         select elder_id from people_relation where youngster_id = #{youngsterId} and status = #{status}
     </select>
+
     <select id="getYoungsterIdByElderId" resultType="java.lang.Long">
         select youngster_id from people_relation where elder_id = #{elderId} and status = #{status}
     </select>
+
     <select id="containsRelations" resultType="java.lang.Integer">
         select count(*) from people_relation where youngster_id = #{youngsterId} and elder_id = #{elderId} and status = 0
     </select>

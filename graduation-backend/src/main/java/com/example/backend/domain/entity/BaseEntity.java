@@ -4,12 +4,15 @@ import com.example.backend.utils.object.ObjectUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
 public abstract class BaseEntity implements Serializable {
+    @Serial
     private static final long serialVersionUID = 114514L;
 
     //主键
@@ -37,9 +40,6 @@ public abstract class BaseEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        if (ObjectUtils.isNull(id)) {
-            throw new IllegalArgumentException("id is null");
-        }
-        return id.hashCode();
+        return Objects.hashCode(id);
     }
 }
