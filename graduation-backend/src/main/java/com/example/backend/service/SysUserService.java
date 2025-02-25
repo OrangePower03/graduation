@@ -11,10 +11,7 @@ import com.example.backend.domain.dto.user.RegisterDTO;
 import com.example.backend.domain.entity.SysRole;
 import com.example.backend.domain.entity.SysUser;
 import com.example.backend.domain.vo.PageVO;
-import com.example.backend.domain.vo.user.PersonVO;
-import com.example.backend.domain.vo.user.RoleVO;
-import com.example.backend.domain.vo.user.UserInfoVO;
-import com.example.backend.domain.vo.user.RegisterVO;
+import com.example.backend.domain.vo.user.*;
 import com.example.backend.mapper.SysUserMapper;
 import com.example.backend.security.LoginUser;
 import com.example.backend.utils.AssertUtils;
@@ -169,16 +166,16 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         return BeanCopyUtils.copyBean(user, PersonVO.class);
     }
 
-    public @NonNull PageVO<UserInfoVO> getUser(String username, String name, String phone, Long roleId) {
+    public @NonNull PageVO<ListUserVO> getUser(String username, String name, String phone, Long roleId) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.nonNull(username), SysUser::getUsername, username);
         wrapper.like(StringUtils.nonNull(name), SysUser::getName, name);
         wrapper.eq(StringUtils.nonNull(phone), SysUser::getPhone, phone);
         wrapper.eq(StringUtils.nonNull(roleId), SysUser::getRoleId, roleId);
         Page<SysUser> page = this.page(PageUtils.getPage(), wrapper);
-        PageVO<UserInfoVO> res = new PageVO<>(page, UserInfoVO.class);
+        PageVO<ListUserVO> res = new PageVO<>(page, ListUserVO.class);
         Map<Long, String> roleMap = CollectionUtils.toMap(roleService.getRole(null), RoleVO::getId, RoleVO::getName);
-        for (UserInfoVO user : res.getRows()) {
+        for (ListUserVO user : res.getRows()) {
             user.setRoleName(roleMap.get(user.getRoleId()));
         }
         return res;

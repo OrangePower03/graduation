@@ -2,19 +2,16 @@ package com.example.backend.controller;
 
 import com.example.backend.domain.dto.user.LoginDTO;
 import com.example.backend.domain.dto.user.RegisterDTO;
-import com.example.backend.domain.dto.user.RoleDTO;
 import com.example.backend.domain.vo.PageVO;
-import com.example.backend.domain.vo.user.RoleVO;
+import com.example.backend.domain.vo.user.ListUserVO;
 import com.example.backend.domain.vo.user.UserInfoVO;
 import com.example.backend.domain.vo.user.RegisterVO;
-import com.example.backend.service.SysRoleService;
 import com.example.backend.service.SysUserService;
 import com.example.backend.utils.web.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 public class UserController extends BaseController {
@@ -39,7 +36,7 @@ public class UserController extends BaseController {
 
     @PreAuthorize("@MA.isAdmin()")
     @GetMapping("/user")
-    public ResponseResult<PageVO<UserInfoVO>> getUser(String username, String name, String phone, Long roleId) {
+    public ResponseResult<PageVO<ListUserVO>> getUser(String username, String name, String phone, Long roleId) {
         return ok(userService.getUser(username, name, phone, roleId));
     }
 

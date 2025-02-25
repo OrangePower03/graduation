@@ -8,7 +8,6 @@ import com.example.backend.exception.GlobalException;
 import com.example.backend.mapper.SysRoleMapper;
 import com.example.backend.mapper.SysUserMapper;
 import com.example.backend.utils.AssertUtils;
-import com.example.backend.utils.mp.SqlUtils;
 import com.example.backend.utils.object.ObjectUtils;
 import com.example.backend.utils.redis.StringRedisUtils;
 import com.example.backend.utils.web.AppHttpCode;
