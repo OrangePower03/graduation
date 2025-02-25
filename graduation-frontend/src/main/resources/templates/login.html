@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>登录页面</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>登录</h1>
+
+        <!-- 显示错误信息 -->
+        <div th:if="${error}" class="error">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- 登录表单 -->
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required="required" placeholder="请输入用户名">
+            </div>
+
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required="required" placeholder="请输入密码">
+            </div>
+
+            <div class="form-group">
+                <button type="submit">登录</button>
+            </div>
+
+            <!-- 显示登录成功消息 -->
+            <div th:if="${message}" class="success">
+                <p th:text="${message}"></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- 可能需要的 JS 文件 -->
+    <script src="/js/scripts.js"></script>
+</body>
+</html>
