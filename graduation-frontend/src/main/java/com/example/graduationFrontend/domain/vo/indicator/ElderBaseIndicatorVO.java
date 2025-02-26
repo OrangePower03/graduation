@@ -1,0 +1,19 @@
+package com.example.graduationFrontend.domain.vo.indicator;
+
+import com.example.graduationFrontend.domain.vo.BaseVO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+public class ElderBaseIndicatorVO extends BaseVO {
+    Date checkTime;
+
+    Integer normal;
+}

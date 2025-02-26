@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class UserController {
+public class UserController extends BaseController {
     @GetMapping("/")
     public String showLoginPage(Model model) {
         return "login";  // 返回 Thymeleaf 模板 login.html
