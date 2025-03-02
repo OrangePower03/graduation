@@ -52,18 +52,37 @@
             position: relative;
         }
 
-        /* 右上角个人中心 */
+
+        /* 个人中心外部容器 */
         .user-dropdown {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 80px; /* 增加右边距 */
         }
 
+        /* 下拉按钮 */
         .dropdown {
             position: relative;
             display: inline-block;
         }
 
+        /* 个人中心按钮样式 */
+        .dropbtn {
+            background-color: transparent; /* 透明背景 */
+            border: none; /* 去掉按钮边框 */
+            color: black; /* 按钮文字颜色改为黑色 */
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 按钮鼠标悬浮时样式 */
+        .dropbtn:hover {
+            background-color: rgba(255, 255, 255, 0.5); /* 背景变为透明白色 */
+        }
+
+        /* 下拉菜单 */
         .dropdown-content {
             display: none;
             position: absolute;
@@ -71,22 +90,28 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 1;
+            border-radius: 5px;
         }
 
+        /* 鼠标悬停时显示下拉框 */
         .dropdown:hover .dropdown-content {
             display: block;
         }
 
+        /* 下拉菜单中的链接样式 */
         .dropdown-content a {
-            color: black;
+            color: #333;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
+            transition: background-color 0.3s ease;
         }
 
+        /* 鼠标悬停时，链接背景色变 */
         .dropdown-content a:hover {
             background-color: #ddd;
         }
+
 
         /* 搜索框样式 */
         .search-bar {
@@ -192,6 +217,49 @@
             color: white;
         }
 
+        /* 修改按钮样式 */
+    .edit-button {
+        background-color: #f39c12; /* 黄色背景 */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px; /* 圆角 */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .edit-button:hover {
+        background-color: #e67e22; /* 鼠标悬停时变暗黄色 */
+    }
+
+    /* 删除按钮样式 */
+    .delete-button {
+        background-color: #e74c3c; /* 红色背景 */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px; /* 圆角 */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .delete-button:hover {
+        background-color: #c0392b; /* 鼠标悬停时变暗红色 */
+    }
+
+    /* 防止删除按钮和修改按钮挤在一起 */
+    .form-inline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-inline button {
+        margin-left: 10px;
+    }
+
     </style>
 </head>
 <body>
@@ -201,8 +269,9 @@
         <div class="sidebar">
             <ul>
                 <li><a href="/">首页</a></li>
-                <li><a href="#">角色管理</a></li>
+                <li><a href="/admin/role">角色管理</a></li>
                 <li><a href="/admin/user">用户管理</a></li>
+                <li><a href="/admin/elder">新增老年人指标</a></li>
             </ul>
         </div>
 
@@ -254,16 +323,11 @@
                         <td th:text="${role.createTime}"></td>
                         <td>
                             <!-- 修改按钮 -->
-                            <form th:action="@{/admin/role/update}" method="post">
-                                <input type="hidden" th:value="${role.id}" name="id" />
-                                <input type="text" th:value="${role.name}" name="name" />
-                                <input type="text" th:value="${role.permissionKey}" name="permissionKey" />
-                                <button type="submit">修改</button>
-                            </form>
+                            <button type="button" class="edit-button"  th:attr="data-role-id=${role.id}, data-role-name=${role.name}, data-role-key=${role.permissionKey}" onclick="openEditForm(this)">修改</button>
 
                             <!-- 删除按钮 -->
                             <form th:action="@{/admin/role/delete/{id}(id=${role.id})}" method="post" style="display:inline;">
-                                <button type="submit" onclick="return confirm('确定要删除这个角色吗？')">删除</button>
+                                <button type="submit" class="delete-button" onclick="return confirm('确定要删除这个角色吗？')">删除</button>
                             </form>
                         </td>
                     </tr>
@@ -292,9 +356,48 @@
             </div>
         </div>
 
+        <!-- 修改角色弹窗 -->
+        <div id="editOverlay" class="overlay" style="display:none;">
+            <div class="popup">
+                <h3>修改角色</h3>
+                <form id="editRoleForm" th:action="@{/admin/role/update}" method="post">
+                    <input type="hidden" id="editRoleId" name="id" />
+                    <div>
+                        <label for="editName">角色名</label>
+                        <input type="text" id="editName" name="name" required="required" placeholder="请输入角色名" />
+                    </div>
+                    <div>
+                        <label for="editPermissionKey">权限键</label>
+                        <input type="text" id="editPermissionKey" name="permissionKey" required="required" placeholder="请输入权限键" />
+                    </div>
+                    <div>
+                        <button type="submit">提交</button>
+                        <button type="button" class="close-btn" onclick="closeEditForm()">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
     </div>
 
     <script>
+        // 打开修改角色弹窗并填充数据
+        function openEditForm(button) {
+            // 设置表单中的数据
+            document.getElementById('editRoleId').value = button.getAttribute('data-role-id');
+            document.getElementById('editName').value = button.getAttribute('data-role-name');
+            document.getElementById('editPermissionKey').value = button.getAttribute('data-role-key');
+
+            // 显示弹窗
+            document.getElementById('editOverlay').style.display = 'flex';
+        }
+
+        // 关闭修改角色弹窗
+        function closeEditForm() {
+            document.getElementById('editOverlay').style.display = 'none';
+        }
+
         // 打开新增角色表单
         function openAddRoleForm() {
             document.getElementById('addOverlay').style.display = 'flex';

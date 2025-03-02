@@ -51,18 +51,36 @@
             padding: 20px;
         }
 
-        /* 右上角个人中心 */
+        /* 个人中心外部容器 */
         .user-dropdown {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 80px; /* 增加右边距 */
         }
 
+        /* 下拉按钮 */
         .dropdown {
             position: relative;
             display: inline-block;
         }
 
+        /* 个人中心按钮样式 */
+        .dropbtn {
+            background-color: transparent; /* 透明背景 */
+            border: none; /* 去掉按钮边框 */
+            color: black; /* 按钮文字颜色改为黑色 */
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 按钮鼠标悬浮时样式 */
+        .dropbtn:hover {
+            background-color: rgba(255, 255, 255, 0.5); /* 背景变为透明白色 */
+        }
+
+        /* 下拉菜单 */
         .dropdown-content {
             display: none;
             position: absolute;
@@ -70,19 +88,24 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 1;
+            border-radius: 5px;
         }
 
+        /* 鼠标悬停时显示下拉框 */
         .dropdown:hover .dropdown-content {
             display: block;
         }
 
+        /* 下拉菜单中的链接样式 */
         .dropdown-content a {
-            color: black;
+            color: #333;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
+            transition: background-color 0.3s ease;
         }
 
+        /* 鼠标悬停时，链接背景色变 */
         .dropdown-content a:hover {
             background-color: #ddd;
         }
