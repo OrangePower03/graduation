@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>错误页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8d7da;
+            color: #721c24;
+            text-align: center;
+            padding: 50px;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 20px;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-message">
+        <h2>发生错误！</h2>
+        <p th:text="${errorMessage}"></p>
+    </div>
+</body>
+</html>

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DateUtils extends ObjectUtils {
-    public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATE_PATTERN);
     public static final DateFormat MYSQL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -21,6 +21,7 @@ public class DateUtils extends ObjectUtils {
             throw new GlobalException(400, "日期格式不正确，请输入正确的日期格式:" + DATE_PATTERN);
         }
     }
+
 
     public static String defaultFormat(Date date) {
         return DEFAULT_DATE_FORMAT.format(date);

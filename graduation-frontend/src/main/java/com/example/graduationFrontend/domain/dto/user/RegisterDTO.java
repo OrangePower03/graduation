@@ -15,7 +15,7 @@ public class RegisterDTO extends BaseDTO {
 
     private String password;
 
-    private String rPassword;
+    private String repeatPassword;
 
     private String phone;
 

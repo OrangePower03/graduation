@@ -38,7 +38,8 @@ public class UserDetailsServerImpl implements UserDetailsService {
                 .or()
                 .eq(SysUser::getIdNumber, uniqueIdentifier)
                 .or()
-                .eq(SysUser::getPhone, uniqueIdentifier);
+                .eq(SysUser::getPhone, uniqueIdentifier)
+        ;
         SysUser user = sysUserMapper.selectOne(userWrapper);
         if (ObjectUtils.isNull(user)) {
             log.error("用户不存在");

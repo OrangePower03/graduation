@@ -6,7 +6,7 @@ drop table if exists `sys_user`;
 create table `sys_user`(
     `id` bigint not null primary key auto_increment comment '主键',
     `username` varchar(64) not null unique comment '用户名',
-    `password` varchar(64) not null comment '密码',
+    `password` varchar(255) not null comment '密码',
     `name` varchar(64) not null comment '用户的真实姓名',
     `id_number` varchar(18) not null unique comment '用户的身份证号',
     `phone` varchar(11) null comment '用户的手机',
@@ -18,6 +18,8 @@ create table `sys_user`(
     `update_time` datetime not null default now() comment '更新时间',
     `del_flag` tinyint not null default 0 comment '删除标志，1标识删除'
 );
+insert into `sys_user`(username, password, name, id_number, phone, age, sex, role_id) values
+('charlie','$2a$10$DSqLQnjA9X.j1Iv8ZSRDCeNeiOkBa5R3ZQ2MeM0Q3YJpKFvfjKVKK','mvp','1','1',18,0,1);
 
 drop table if exists `sys_role`;
 create table `sys_role`(

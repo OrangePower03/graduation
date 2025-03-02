@@ -19,5 +19,6 @@ public class RoleVO extends BaseVO {
 
     private String permissionKey;
 
-    private Date createTime;
+    private String createTime;
+
 }

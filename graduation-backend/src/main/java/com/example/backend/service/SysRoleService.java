@@ -19,9 +19,10 @@ import java.util.List;
 
 @Service
 public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> implements IService<SysRole> {
-    public void addRole(RoleDTO role) {
+    public List<RoleVO> addRole(RoleDTO role) {
         SysRole sysRole = BeanCopyUtils.copyBean(role, SysRole.class);
         save(sysRole);
+        return getRole(null);
     }
 
     public @NonNull List<RoleVO> getRole(@Nullable String name) {
@@ -30,16 +31,18 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> implemen
         return BeanCopyUtils.copyBeans(list(wrapper), RoleVO.class);
     }
 
-    public void deleteRole(Long id) {
+    public List<RoleVO> deleteRole(Long id) {
         removeById(id);
+        return getRole(null);
     }
 
-    public void updateRole(Long id, RoleDTO role) {
+    public List<RoleVO> updateRole(Long id, RoleDTO role) {
         SysRole sysRole = this.getById(id);
         AssertUtils.nonNull(sysRole, AppHttpCode.ROLE_NOT_FOUND_ERROR);
         sysRole.setName(ObjectUtils.requireNonNullElse(role.getName(), sysRole.getName()));
         sysRole.setPermissionKey(ObjectUtils.requireNonNullElse(role.getPermissionKey(), sysRole.getPermissionKey()));
         updateById(sysRole);
+        return getRole(null);
     }
 }
 

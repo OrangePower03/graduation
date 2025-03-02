@@ -56,7 +56,7 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         AssertUtils.isTrue(StringUtils.isMatch(register.getUsername(), USERNAME_FORMAT), AppHttpCode.USERNAME_FORMAT_ERROR);
         AssertUtils.isTrue(StringUtils.isMatch(register.getPassword(), PASSWORD_FORMAT), AppHttpCode.PASSWORD_FORMAT_ERROR);
         AssertUtils.isTrue(StringUtils.isMatch(register.getIdNumber(), ID_NUMBER_FORMAT), AppHttpCode.ID_NUMBER_FORMAT_ERROR);
-        AssertUtils.isEquals(register.getPassword(), register.getRPassword(), AppHttpCode.PASSWORD_NOT_EQUALS_ERROR);
+        AssertUtils.isEquals(register.getPassword(), register.getRepeatPassword(), AppHttpCode.PASSWORD_NOT_EQUALS_ERROR);
         // todo 校验名字和身份证，需要企业用户才能调用接口
 
         // 校验用户名、手机、身份证号是否已存在
@@ -71,7 +71,7 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         AssertUtils.isTrue(count(userWrapper) == 0, AppHttpCode.ID_NUMBER_EXISTS);
 
         // 保存用户
-        int bornYear = Integer.parseInt(register.getIdNumber().substring(6, 14));
+        int bornYear = Integer.parseInt(register.getIdNumber().substring(6, 10));
         int nowYear = new GregorianCalendar().get(Calendar.YEAR);
         int age = nowYear - bornYear;
         SysUser user = BeanCopyUtils.copyBean(register, SysUser.class);

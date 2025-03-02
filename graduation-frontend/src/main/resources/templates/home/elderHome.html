@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>主页面</title>
+    <style>
+        /* 页面布局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 主容器 */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #fff;
+            padding-top: 20px;
+            height: 100%;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 15px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar li:hover {
+            background-color: #34495e;
+        }
+
+        /* 右侧内容区 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* 右上角个人中心 */
+        .user-dropdown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 左侧导航栏 -->
+        <div class="sidebar">
+            <ul>
+                <li><a href="/">首页</a></li>
+                <li><a href="/elder/youngster">子女管理</a></li>
+                <li><a href="/elder/indicator">查看指标</a></li>
+            </ul>
+        </div>
+
+        <!-- 右侧内容区域 -->
+        <div class="main-content">
+            <!-- 右上角个人中心 -->
+            <div class="user-dropdown">
+                <div class="dropdown">
+                    <button class="dropbtn">个人中心</button>
+                    <div class="dropdown-content">
+                        <a href="/user/detail">个人资料</a>
+                        <a href="/logout">退出登录</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 其他主页面内容 -->
+            <h2>欢迎来到主页面</h2>
+            <p>这里是你可以展示的其他内容...</p>
+        </div>
+    </div>
+
+</body>
+</html>

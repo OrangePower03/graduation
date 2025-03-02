@@ -19,8 +19,8 @@ public interface UserConstants {
     Integer USER_STATUS_BLOCK = 1;
     Integer USER_STATUS_MONITORING = 2;
 
-    Integer USER_SEX_WOMAN = 0;
-    Integer USER_SEX_MAN = 1;
+    Integer USER_SEX_MAN = 0;
+    Integer USER_SEX_WOMAN = 1;
 
     Integer USER_INDICATOR_NORMAL = 0;
     Integer USER_INDICATOR_HIGH = 1;

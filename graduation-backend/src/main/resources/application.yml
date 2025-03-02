@@ -22,4 +22,5 @@ mybatis-plus:
       logic-delete-field: delFlag
       logic-delete-value: 1
       logic-not-delete-value: 0
-      id-type: ASSIGN_ID # 主键策略
+      id-type: AUTO # 自增
+#      id-type: ASSIGN_ID # 主键策略

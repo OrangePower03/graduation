@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>角色管理</title>
+    <style>
+        /* 页面布局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 主容器 */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #fff;
+            padding-top: 20px;
+            height: 100%;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 15px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar li:hover {
+            background-color: #34495e;
+        }
+
+        /* 右侧内容区 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* 右上角个人中心 */
+        .user-dropdown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        /* 搜索框样式 */
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            margin-right: 10px;
+        }
+
+        .search-bar button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #2980b9;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* 新增角色按钮样式 */
+        .action-buttons button {
+            background-color: #2ecc71; /* 绿色背景 */
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .action-buttons button:hover {
+            background-color: #27ae60; /* 悬浮时变为深绿色 */
+        }
+
+        /* 弹出表单 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            position: relative;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup input {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .popup button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .close-btn {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 左侧导航栏 -->
+        <div class="sidebar">
+            <ul>
+                <li><a href="/">首页</a></li>
+                <li><a href="#">角色管理</a></li>
+                <li><a href="/admin/user">用户管理</a></li>
+            </ul>
+        </div>
+
+        <!-- 右侧内容区域 -->
+        <div class="main-content">
+            <!-- 右上角个人中心 -->
+            <div class="user-dropdown">
+                <div class="dropdown">
+                    <button class="dropbtn">个人中心</button>
+                    <div class="dropdown-content">
+                        <a href="/user/detail">个人资料</a>
+                        <a href="/logout">退出登录</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 角色管理内容 -->
+            <h2>角色管理</h2>
+
+            <!-- 搜索框 -->
+            <div class="search-bar">
+                <form th:action="@{/admin/role/list}" method="post" th:object="${roleDTO}">
+                    <input type="text" id="roleName" name="roleName" placeholder="请输入角色名" th:field="*{name}" />
+                    <button type="submit">搜索</button>
+                </form>
+            </div>
+
+            <div class="action-buttons">
+                <!-- 新增角色按钮 -->
+                <button onclick="openAddRoleForm()">新增角色</button>
+            </div>
+
+            <!-- 角色列表 -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>角色名</th>
+                        <th>权限键</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="role : ${roles}">
+                        <td th:text="${role.id}"></td>
+                        <td th:text="${role.name}"></td>
+                        <td th:text="${role.permissionKey}"></td>
+                        <td th:text="${role.createTime}"></td>
+                        <td>
+                            <!-- 修改按钮 -->
+                            <form th:action="@{/admin/role/update}" method="post">
+                                <input type="hidden" th:value="${role.id}" name="id" />
+                                <input type="text" th:value="${role.name}" name="name" />
+                                <input type="text" th:value="${role.permissionKey}" name="permissionKey" />
+                                <button type="submit">修改</button>
+                            </form>
+
+                            <!-- 删除按钮 -->
+                            <form th:action="@{/admin/role/delete/{id}(id=${role.id})}" method="post" style="display:inline;">
+                                <button type="submit" onclick="return confirm('确定要删除这个角色吗？')">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 弹出表单 -->
+        <div id="addOverlay" class="overlay">
+            <div class="popup">
+                <h3>新增角色</h3>
+                <form th:action="@{/admin/role/add}" method="post" th:object="${addRoleDTO}">
+                    <div>
+                        <label for="name">角色名</label>
+                        <input type="text" id="name" name="name" th:field="*{name}" required="required" placeholder="请输入角色名" />
+                    </div>
+                    <div>
+                        <label for="permissionKey">权限键</label>
+                        <input type="text" id="permissionKey" name="permissionKey" th:field="*{permissionKey}" required="required" placeholder="请输入权限键" />
+                    </div>
+                    <div>
+                        <button type="submit">提交</button>
+                        <button type="button" class="close-btn" onclick="closeAddRoleForm()">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 打开新增角色表单
+        function openAddRoleForm() {
+            document.getElementById('addOverlay').style.display = 'flex';
+        }
+
+        // 关闭新增角色表单
+        function closeAddRoleForm() {
+            document.getElementById('addOverlay').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

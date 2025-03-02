@@ -18,9 +18,8 @@ public class RoleController extends BaseController {
 
     @PreAuthorize("@MA.isAdmin()")
     @PostMapping
-    public ResponseResult<Void> addRole(@RequestBody RoleDTO role) {
-        roleService.addRole(role);
-        return ok();
+    public ResponseResult<List<RoleVO>> addRole(@RequestBody RoleDTO role) {
+        return ok(roleService.addRole(role));
     }
 
     @PreAuthorize("@MA.isAdmin()")
@@ -31,15 +30,13 @@ public class RoleController extends BaseController {
 
     @PreAuthorize("@MA.isAdmin()")
     @DeleteMapping("/{id}")
-    public ResponseResult<Void> deleteRole(@PathVariable Long id) {
-        roleService.deleteRole(id);
-        return ok();
+    public ResponseResult<List<RoleVO>> deleteRole(@PathVariable Long id) {
+        return ok(roleService.deleteRole(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseResult<Void> updateRole(@PathVariable Long id, @RequestBody RoleDTO role) {
-        roleService.updateRole(id, role);
-        return ok();
+    public ResponseResult<List<RoleVO>> updateRole(@PathVariable Long id, @RequestBody RoleDTO role) {
+        return ok(roleService.updateRole(id, role));
     }
 
 }

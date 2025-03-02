@@ -2,6 +2,7 @@ package com.example.backend.domain.entity;
 
 import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.*;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -23,6 +24,7 @@ public class SysUser extends BaseEntity {
     private String username;
 
     //密码
+    @JSONField(serialize = false, deserialize = false)
     private String password;
 
     //用户的真实姓名
