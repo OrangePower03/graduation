@@ -15,4 +15,6 @@ public class PageVO<T extends BaseVO> extends BaseVO {
     List<T> rows;
 
     int total;
+
+    int current;
 }

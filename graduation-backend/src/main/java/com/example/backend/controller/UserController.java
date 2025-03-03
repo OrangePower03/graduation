@@ -42,14 +42,13 @@ public class UserController extends BaseController {
 
     @PreAuthorize("@MA.isAdmin()")
     @DeleteMapping("/user/{id}")
-    public ResponseResult<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ok();
+    public ResponseResult<PageVO<ListUserVO>> deleteUser(@PathVariable Long id) {
+        return ok(userService.deleteUser(id));
     }
 
-    @PutMapping("/user/{id}")
-    public ResponseResult<Void> updateUserState(@PathVariable Long id) {
-        userService.updateUserState(id);
+    @PutMapping("/user/{id}/{status}")
+    public ResponseResult<Void> updateUserState(@PathVariable Long id, @PathVariable Integer status) {
+        userService.updateUserState(id, status);
         return ok();
     }
 

@@ -7,6 +7,7 @@ import com.example.graduationFrontend.constants.HttpConstants;
 import com.example.graduationFrontend.constants.HttpMethod;
 import com.example.graduationFrontend.domain.dto.BaseDTO;
 import com.example.graduationFrontend.domain.vo.BaseVO;
+import com.example.graduationFrontend.domain.vo.common.PageVO;
 import com.example.graduationFrontend.domain.vo.common.ResponseResult;
 import lombok.NonNull;
 import okhttp3.*;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +45,19 @@ public class BaseController {
         return buildGetRequest(url, Map.of(HttpConstants.HEADER_AUTHENTICATION, authentication), param);
     }
 
+    public Request buildGetRequest(@NonNull String url,
+                                   String authentication,
+                                   int pageNum,
+                                   int pageSize,
+                                   Map<String, String> param) {
+
+        Map<String, String> header = new HashMap<>();
+        header.put(HttpConstants.HEADER_AUTHENTICATION, authentication);
+        header.put(HttpConstants.HEADER_PAGE_SIZE, String.valueOf(pageSize));
+        header.put(HttpConstants.HEADER_PAGE_NUM, String.valueOf(pageNum));
+        return buildGetRequest(url, header, param);
+    }
+
     public Request buildRequest(@NonNull String url,
                                 @NonNull Map<String, String> headers,
                                 Map<String, String> param,
@@ -63,6 +79,19 @@ public class BaseController {
                                 BaseDTO body) {
 
         return buildRequest(url, Map.of(HttpConstants.HEADER_AUTHENTICATION, token), param, method, body);
+    }
+
+    public Request buildRequestWithPage(@NonNull String url,
+                                String token,
+                                Map<String, String> param,
+                                HttpMethod method,
+                                BaseDTO body) {
+
+        Map<String, String> header = new HashMap<>();
+        header.put(HttpConstants.HEADER_AUTHENTICATION, token);
+        header.put(HttpConstants.HEADER_PAGE_NUM, String.valueOf(1));
+        header.put(HttpConstants.HEADER_PAGE_SIZE, String.valueOf(10));
+        return buildRequest(url, header, param, method, body);
     }
 
     private String buildUrl(String url, Map<String, String> param) {
@@ -102,16 +131,41 @@ public class BaseController {
         }
     }
 
-//    public <T> ResponseResult<List<T>> sendRequest(Request request, Class<T> bodyClass) {
-//        try (Response response = client.newCall(request).execute()) {
-//            assert response.body() != null;
-//            String bodyStr = response.body().string();
-//            JSONObject middleBody = JSON.parseObject(bodyStr);
-//            return new ResponseResult<>(middleBody, bodyClass);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public <T extends BaseVO> ResponseResult<PageVO<T>> sendRequestAsPage(Request request, Class<T> bodyClass) {
+        try (Response response = client.newCall(request).execute()) {
+            assert response.body() != null;
+            String bodyStr = response.body().string();
+            JSONObject middleBody = JSON.parseObject(bodyStr);
+            int code = middleBody.getInteger("code");
+            String msg = middleBody.getString("msg");
+            JSONObject pageBody = middleBody.getJSONObject("data");
+            int total = pageBody.getInteger("total");
+            int current = pageBody.getInteger("current");
+            List<T> rows = pageBody.getJSONArray("rows").toJavaList(bodyClass);
+            PageVO<T> data = new PageVO<>(rows, total, current);
+            return new ResponseResult<>(code, msg, data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, String> buildParam(@NonNull final BaseDTO dto) {
+        Class<? extends BaseDTO> clazz = dto.getClass();
+        Map<String, String> res = new HashMap<>();
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                String key = field.getName();
+                Object value = field.get(dto);
+                if (value != null) {
+                    res.put(key, value.toString());
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return res;
+    }
 
     public ResponseResult<Void> sendRequest(Request request) {
         return sendRequest(request, Void.class);

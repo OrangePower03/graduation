@@ -168,10 +168,10 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
 
     public @NonNull PageVO<ListUserVO> getUser(String username, String name, String phone, Long roleId) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.like(StringUtils.nonNull(username), SysUser::getUsername, username);
-        wrapper.like(StringUtils.nonNull(name), SysUser::getName, name);
-        wrapper.eq(StringUtils.nonNull(phone), SysUser::getPhone, phone);
-        wrapper.eq(StringUtils.nonNull(roleId), SysUser::getRoleId, roleId);
+        wrapper.like(StringUtils.nonBlank(username), SysUser::getUsername, username);
+        wrapper.like(StringUtils.nonBlank(name), SysUser::getName, name);
+        wrapper.eq(StringUtils.nonBlank(phone), SysUser::getPhone, phone);
+        wrapper.eq(StringUtils.nonNull(roleId) && roleId != -1, SysUser::getRoleId, roleId);
         Page<SysUser> page = this.page(PageUtils.getPage(), wrapper);
         PageVO<ListUserVO> res = new PageVO<>(page, ListUserVO.class);
         Map<Long, String> roleMap = CollectionUtils.toMap(roleService.getRole(null), RoleVO::getId, RoleVO::getName);
@@ -181,14 +181,21 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         return res;
     }
 
-    public void deleteUser(Long id) {
+    public PageVO<ListUserVO> deleteUser(Long id) {
+        AssertUtils.isFalse(operatorMyself(id), AppHttpCode.REMOVE_MYSELF_ERROR);
         this.removeById(id);
+        return getUser(null, null, null, null);
     }
 
-    public void updateUserState(Long id) {
+    public void updateUserState(Long id, Integer status) {
+        AssertUtils.isFalse(operatorMyself(id), AppHttpCode.REMOVE_MYSELF_ERROR);
         SysUser user = this.getById(id);
         AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
-        user.setStatus(USER_STATUS_BLOCK);
-        this.save(user);
+        user.setStatus(status);
+        this.updateById(user);
+    }
+
+    private boolean operatorMyself(Long userId) {
+        return userId.equals(SecurityUtils.getUserId());
     }
 }

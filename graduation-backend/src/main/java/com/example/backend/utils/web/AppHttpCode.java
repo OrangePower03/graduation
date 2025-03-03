@@ -28,6 +28,7 @@ public class AppHttpCode {
     public static final AppHttpCode REQUEST_DATA_FIELD_IS_NULL = new AppHttpCode(HttpStatus.BAD_REQUEST, "请求数据不完全");
     public static final AppHttpCode USERNAME_OR_PASSWORD_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户名或密码错误");
     public static final AppHttpCode RELATION_USER_ROLE_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"关系绑定错误，年轻人和年轻人或者老年人和老年人间不需要绑定关系");
+    public static final AppHttpCode REMOVE_MYSELF_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"不能操作自己");
 
     public static final AppHttpCode UNAUTHORIZED_ERROR = new AppHttpCode(HttpStatus.UNAUTHORIZED,"未授权认证");
 

@@ -2,8 +2,12 @@ package com.example.graduationFrontend.controller;
 
 import com.example.graduationFrontend.constants.HttpMethod;
 import com.example.graduationFrontend.domain.dto.user.RoleDTO;
+import com.example.graduationFrontend.domain.dto.user.UserDTO;
+import com.example.graduationFrontend.domain.vo.common.PageVO;
 import com.example.graduationFrontend.domain.vo.common.ResponseResult;
+import com.example.graduationFrontend.domain.vo.user.ListUserVO;
 import com.example.graduationFrontend.domain.vo.user.RoleVO;
+import com.example.graduationFrontend.domain.vo.user.UserInfoVO;
 import com.example.graduationFrontend.exception.ErrorException;
 import com.example.graduationFrontend.utils.DataUtils;
 import okhttp3.Request;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,4 +90,50 @@ public class AdminController extends BaseController {
         model.addAttribute("addRoleDTO", new RoleDTO());
         return "/admin/role";
     }
+
+
+    @GetMapping("/user")
+    public String operatorUserPage(HttpSession session, Model model) {
+        String token = DataUtils.getUserToken(session);
+        Request request = buildGetRequest("/user", token, 1, 10, null);
+        ResponseResult<PageVO<ListUserVO>> result = sendRequestAsPage(request, ListUserVO.class);
+        return toUserPage(session, model, new UserDTO(), result.getData());
+    }
+
+
+    @PostMapping("/user/list")
+    public String handleUserSearch(HttpSession session, UserDTO userDTO, Model model) {
+        String token = DataUtils.getUserToken(session);
+
+        Request request = buildGetRequest("/user", token, userDTO.getPageNum(), userDTO.getPageSize(), buildParam(userDTO));
+        ResponseResult<PageVO<ListUserVO>> result = sendRequestAsPage(request, ListUserVO.class);
+        return toUserPage(session, model, userDTO, result.getData());
+    }
+
+
+    @PostMapping("/user/delete/{id}")
+    public String handleDeleteUser(HttpSession session, @PathVariable Long id, UserDTO userDTO, Model model) {
+        String token = DataUtils.getUserToken(session);
+
+        Request request = buildRequestWithPage("/user/" + id, token, null, HttpMethod.DELETE, null);
+        ResponseResult<PageVO<ListUserVO>> result = sendRequestAsPage(request, ListUserVO.class);
+        return toUserPage(session, model, userDTO, result.getData());
+    }
+
+    private String toUserPage(HttpSession session, Model model, UserDTO userDTO, PageVO<ListUserVO> users) {
+
+        Request request = buildGetRequest("/role", DataUtils.getUserToken(session), null);
+        ResponseResult<List<RoleVO>> result = sendRequestAsList(request, RoleVO.class);
+        if (result.isSuccess()) {
+            model.addAttribute("users", users.getRows());
+            model.addAttribute("total", users.getTotal());
+            model.addAttribute("current", users.getCurrent());
+            model.addAttribute("pageSize", (int) Math.ceil((double) users.getTotal() / users.getCurrent()));
+            model.addAttribute("userDTO", userDTO);
+            model.addAttribute("roles", result.getData());
+            return "/admin/user";
+        }
+        throw new ErrorException(result);
+    }
+
 }

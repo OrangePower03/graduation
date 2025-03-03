@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -64,6 +65,12 @@ public class UserController extends BaseController {
     }
 
     /*---------------处理http--------------*/
+
+    @GetMapping("/token")
+    @ResponseBody
+    public Map<String, String> getToken(HttpSession session) {
+        return Map.of("token", DataUtils.getUserToken(session));
+    }
 
     @PostMapping("/login")
     public String handleLogin(LoginDTO loginDTO, HttpServletResponse response, HttpSession session, Model model) {
