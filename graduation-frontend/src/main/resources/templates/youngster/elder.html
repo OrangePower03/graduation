@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>角色管理</title>
+    <style>
+        /* 页面布局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 主容器 */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #fff;
+            padding-top: 20px;
+            height: 100%;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 15px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar li:hover {
+            background-color: #34495e;
+        }
+
+        /* 右侧内容区 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+        }
+
+
+        /* 个人中心外部容器 */
+        .user-dropdown {
+            position: absolute;
+            top: 20px;
+            right: 80px; /* 增加右边距 */
+        }
+
+        /* 下拉按钮 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 个人中心按钮样式 */
+        .dropbtn {
+            background-color: transparent; /* 透明背景 */
+            border: none; /* 去掉按钮边框 */
+            color: black; /* 按钮文字颜色改为黑色 */
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 按钮鼠标悬浮时样式 */
+        .dropbtn:hover {
+            background-color: rgba(255, 255, 255, 0.5); /* 背景变为透明白色 */
+        }
+
+        /* 下拉菜单 */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        /* 鼠标悬停时显示下拉框 */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* 下拉菜单中的链接样式 */
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 鼠标悬停时，链接背景色变 */
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+
+        /* 搜索框样式 */
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            margin-right: 10px;
+        }
+
+        .search-bar button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #2980b9;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* 新增角色按钮样式 */
+        .action-buttons button {
+            background-color: #2ecc71; /* 绿色背景 */
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .action-buttons button:hover {
+            background-color: #27ae60; /* 悬浮时变为深绿色 */
+        }
+
+        /* 弹出表单 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            position: relative;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup input {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .popup button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .close-btn {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        /* 修改按钮样式 */
+    .edit-button {
+        background-color: #f39c12; /* 黄色背景 */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px; /* 圆角 */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .edit-button:hover {
+        background-color: #e67e22; /* 鼠标悬停时变暗黄色 */
+    }
+
+    /* 删除按钮样式 */
+    .delete-button {
+        background-color: #e74c3c; /* 红色背景 */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px; /* 圆角 */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .delete-button:hover {
+        background-color: #c0392b; /* 鼠标悬停时变暗红色 */
+    }
+
+    /* 防止删除按钮和修改按钮挤在一起 */
+    .form-inline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-inline button {
+        margin-left: 10px;
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 左侧导航栏 -->
+        <div class="sidebar">
+            <ul>
+                <li><a href="/">首页</a></li>
+                <li><a href="/youngster/elder/0">长辈管理</a></li>
+                <li><a href="/youngster/indicator">长辈指标</a></li>
+            </ul>
+        </div>
+
+        <!-- 右侧内容区域 -->
+        <div class="main-content">
+            <!-- 右上角个人中心 -->
+            <div class="user-dropdown">
+                <div class="dropdown">
+                    <button class="dropbtn">个人中心</button>
+                    <div class="dropdown-content">
+                        <a href="/user/detail">个人资料</a>
+                        <a href="/logout">退出登录</a>
+                    </div>
+                </div>
+            </div>
+
+            <h2>长辈管理</h2>
+
+            <div class="action-buttons">
+                <!--       状态开关，默认是已通过的         -->
+                <label class="switch">
+                    <span class="slider">长辈已通过:</span>
+                    <input type="checkbox" th:checked="${status == 0}" id="checkbox" th:onclick="'window.location.href=\'/youngster/elder/' + ${status == 0 ? 1 : 0} + '\''" />
+                </label>
+
+                <!-- 新增角色按钮 -->
+                <button onclick="openAddForm()">新增长辈关系</button>
+            </div>
+
+            <!-- 角色列表 -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>年龄</th>
+                        <th th:if="${status} == 0">查看指标</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="elder : ${elders}">
+                        <td th:text="${elder.id}"></td>
+                        <td th:text="${elder.name}"></td>
+                        <td th:text="${elder.age}"></td>
+                        <td th:if="${status} == 0" th:onclick="'window.location.href=\'/youngster/indicator/' + ${elder.id} + '\''">点击查看</td>
+                        <td>
+                            <!-- 删除按钮 -->
+                            <form th:action="@{/youngster/elder/delete/{id}(id=${elder.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="delete-button" onclick="return confirm('确定要删除这个关系吗？')">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 弹出表单 -->
+        <div id="addOverlay" class="overlay">
+            <div class="popup">
+                <h3>新增长辈联系</h3>
+                <form>
+                    <div>
+                        <label for="idNumber">长辈身份证</label>
+                        <input type="text" id="idNumber" name="idNumber" required="required" placeholder="请输入长辈的身份证号" />
+                    </div>
+                    <div>
+                        <label for="name">长辈姓名</label>
+                        <input type="text" id="name" name="name" required="required" placeholder="请输入长辈的姓名" />
+                    </div>
+                    <div id="elderInfo">
+                        <!--   这里需要声明一个空的用户信息，   -->
+                    </div>
+                    <div>
+                        <button id="submit-button" type="button" onclick="bindElder()" style="display: none">确定绑定</button>
+                        <button type="button" onclick="getElder()">查询</button>
+                        <button type="button" class="close-btn" onclick="closeAddForm()">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // 打开新增关系表单
+        function openAddForm() {
+            document.getElementById('addOverlay').style.display = 'flex';
+        }
+
+        // 关闭新增关系表单
+        function closeAddForm() {
+            document.getElementById('addOverlay').style.display = 'none';
+        }
+
+        function getElder() {
+            const idNumber = document.getElementById('idNumber').value;
+            const name = document.getElementById('name').value;
+
+            if (!idNumber.trim() || !name.trim()) {
+                alert("请填写身份证号和姓名！");
+                return;
+            }
+
+            fetch(`/youngster/elder/exact?idNumber=${idNumber}&name=${name}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code !== 200) {
+                        alert(data.msg);
+                        return;
+                    }
+                    const elder = data.data
+
+                    const elderInfoContainer = document.getElementById('elderInfo');
+                    elderInfoContainer.innerHTML = `
+                        <div>
+                            <label>长辈id:</label>
+                            <span id="relationElderId">${elder.id}</span>
+                        </div>
+                        <div>
+                            <label>长辈姓名:</label>
+                            <span>${elder.name}</span>
+                        </div>
+                        <div>
+                            <label>身份证号:</label>
+                            <span>${elder.idNumber}</span>
+                        </div>
+                        <div>
+                            <label>年龄:</label>
+                            <span>${elder.age}</span>
+                        </div>
+                    `;
+                    document.getElementById('submit-button').style.display = 'inline-block';
+                })
+                .catch(error => {
+                    console.error("获取长辈信息失败:", error);
+                    alert("获取长辈信息失败，请检查网络或输入信息！");
+                });
+        }
+
+        function bindElder() {
+            const elderId = document.getElementById('relationElderId').textContent
+            console.log(document.getElementById('relationElderId'))
+            window.location.href= `/youngster/elder/bind/${elderId}`;
+        }
+
+    </script>
+
+</body>
+</html>

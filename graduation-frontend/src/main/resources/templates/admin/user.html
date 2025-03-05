@@ -138,6 +138,27 @@
             background-color: #2980b9;
         }
 
+        /* 设置下拉框样式 */
+    .custom-select {
+        width: 100%;  /* 宽度继承父容器的大小 */
+        max-width: 250px; /* 最大宽度与其他输入框一致 */
+        padding: 8px 12px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    .custom-select:focus {
+        border-color: #3498db;
+        outline: none;
+    }
+
+    .custom-select option {
+        padding: 8px;
+    }
+
         /* 表格样式 */
         table {
             width: 100%;
@@ -177,61 +198,6 @@
             background-color: #27ae60; /* 悬浮时变为深绿色 */
         }
 
-        /* 弹出表单 */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .popup {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            width: 400px;
-            position: relative;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .popup input {
-            margin-bottom: 10px;
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        .popup button {
-            padding: 10px 15px;
-            cursor: pointer;
-        }
-
-        .close-btn {
-            background-color: #ff4d4d;
-            color: white;
-        }
-
-        /* 修改按钮样式 */
-    .edit-button {
-        background-color: #f39c12; /* 黄色背景 */
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px; /* 圆角 */
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .edit-button:hover {
-        background-color: #e67e22; /* 鼠标悬停时变暗黄色 */
-    }
 
     /* 删除按钮样式 */
     .delete-button {
@@ -315,6 +281,106 @@
     .switch input:checked + .slider:before {
         transform: translateX(26px); /* 移动到右侧 */
     }
+
+
+    /* 分页组件样式 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 8px 16px;
+    margin: 0 10px;
+    font-size: 14px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.page-btn:hover {
+    background-color: #2980b9;
+}
+
+.page-info {
+    font-size: 14px;
+    color: #555;
+    margin-right: 20px;
+}
+
+.page-jump {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.page-input {
+    width: 60px;
+    padding: 5px;
+    font-size: 14px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.page-input:focus {
+    border-color: #3498db;
+}
+
+
+        /* 弹出表单 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            position: relative;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup input {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .popup button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .close-btn {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        /* 给指标输入容器添加自动滚动 */
+        #input-list-container {
+            max-height: 300px; /* 根据需要调整高度 */
+            overflow-y: auto;  /* 启用垂直滚动 */
+            padding-right: 10px; /* 让滚动条有点空隙 */
+        }
+
     </style>
 </head>
 <body>
@@ -351,7 +417,7 @@
                     <input type="text" id="username" name="username" placeholder="请输入用户名" th:field="*{username}" />
                     <input type="text" id="userRealName" name="userRealName" placeholder="请输入用户真实名" th:field="*{name}" />
                     <input type="text" id="phone" name="phone" placeholder="请输入用户手机号" th:field="*{phone}" />
-                    <select id="roleId" name="roleId" th:field="*{roleId}">
+                    <select id="roleId" name="roleId" th:field="*{roleId}" class="custom-select">
                         <option th:value="-1">请选择角色</option>
                         <option th:each="role : ${roles}"
                                 th:value="${role.id}"
@@ -376,6 +442,7 @@
                         <th>角色ID</th>
                         <th>角色名</th>
                         <th>状态</th>
+                        <th>新增指标</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -396,11 +463,10 @@
                                 <span class="slider"></span>
                             </label>
                         </td>
-<!--                        <td th:text="${user.status}"></td>-->
                         <td>
-                            <!-- 修改按钮 -->
-<!--                            <button type="button" class="edit-button">修改</button>-->
-
+                            <button type="button" class="add-indicator-button" th:if="${user.roleId == 3}" th:attr="data-elder-id=${user.id}" onclick="openForm(this)">新增</button>
+                        </td>
+                        <td>
                             <!-- 删除按钮 -->
                             <form th:action="@{/admin/user/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
                                 <button type="submit" class="delete-button" onclick="return confirm('确定要删除这个用户吗？')">删除</button>
@@ -408,7 +474,42 @@
                         </td>
                     </tr>
                 </tbody>
+
             </table>
+
+            <!-- 分页组件 -->
+            <div class="pagination">
+                <button class="page-btn" th:if="${current > 1}" th:onclick="'window.location.href=\'/admin/user/list/' + ${current - 1} + '\''">上一页</button>
+
+                <!-- 显示页码 -->
+                <span class="page-info">第 <span th:text="${current}"></span> 页 / 共 <span th:text="${size}"></span> 页</span>
+
+                <!-- 下一页按钮 -->
+                <button class="page-btn" th:if="${current < size}" th:onclick="'window.location.href=\'/admin/user/list/' + ${current + 1} + '\''">下一页</button>
+
+                <!-- 跳转输入框 -->
+                <div class="page-jump">
+                    <input type="number" id="page-input" class="page-input" min="1" th:max="size" th:value="${current}" placeholder="跳转页码">
+                    <button class="page-btn" onclick="jumpToPage()">跳转</button>
+                </div>
+            </div>
+        </div>
+
+        <!--   新增老年人指标悬浮框   -->
+        <div id="addIndicatorOverplay" class="overlay" style="display:none;">
+            <div class="popup">
+                <h3>新增指标</h3>
+                <form id="addIndicatorForm">
+                    <input type="hidden" id="elderId" name="id" />
+                    <div id="input-list-container">
+                        <!-- 这里的输入框将由 JavaScript 动态渲染 -->
+                    </div>
+                    <div>
+                        <button type="button" onclick="submitIndicator(this)">提交</button>
+                        <button type="button" class="close-btn" onclick="closeForm()">取消</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
 
@@ -439,8 +540,164 @@
             .catch(error => {
                 console.error('Error:', error);
             })
+        }
+
+        function jumpToPage() {
+            const pageInput = document.getElementById('page-input');
+            const pageNumber = parseInt(pageInput.value);
+
+            // 获取当前总页数（th:max 已经绑定了总页数，这里可以通过后台传递给前端）
+            const totalPages = parseInt(pageInput.getAttribute('max'));  // 通过 max 获取总页数
+
+            // 校验页码的有效性
+            if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > totalPages) {
+                alert('请输入有效的页码！');
+                return;
+            }
+
+            // 如果页码有效，跳转到该页
+            window.location.href = '/admin/user/list/' + pageNumber
+        }
+
+        function closeForm() {
+            document.getElementById('addIndicatorOverplay').style.display = 'none';
+        }
+
+        function openForm(button) {
+            document.getElementById('addIndicatorOverplay').style.display = 'flex';
+            document.getElementById('elderId').value = button.getAttribute('data-elder-id')
+
+            // 获取指标列表
+            fetch('http://localhost/admin/indicator/list')
+                .then(response => response.json())
+                .then(data => {
+                    const inputListContainer = document.getElementById('input-list-container');
+                    inputListContainer.innerHTML = '';
+
+                    // 添加“检查时间”日期选择框
+                    const dateWrapper = document.createElement('div');
+                    dateWrapper.classList.add('date-input-wrapper');
+
+                    const dateLabel = document.createElement('label');
+                    dateLabel.textContent = '检查时间:';
+
+                    const dateInput = document.createElement('input');
+                    dateInput.setAttribute('type', 'date');
+                    dateInput.setAttribute('id', 'checkDate');
+                    dateInput.setAttribute('name', 'checkDate');
+
+                    dateWrapper.appendChild(dateLabel);
+                    dateWrapper.appendChild(dateInput);
+
+                    // 将“检查时间”框添加到容器的开头
+                    inputListContainer.appendChild(dateWrapper);
+
+                    // 渲染其他指标
+                    data.forEach((indicator, index) => {
+                        const inputWrapper = document.createElement('div');
+                        inputWrapper.classList.add('indicator-input-wrapper');
+
+                        // 创建每个输入框
+                        const label = document.createElement('label');
+                        label.setAttribute('for', `indicator-${index}`);
+                        label.textContent = `${indicator.name}:`;
+
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'text');
+                        input.setAttribute('id', `indicator-${indicator.id}`);
+                        input.setAttribute('name', `indicators[${index}]`); // 根据需求修改 name 格式
+                        input.setAttribute('placeholder', `请输入指标 ${indicator.name}`);
+                        input.setAttribute('value', '');  // 空值，用户填写
+
+                        // 创建单位显示
+                        const unitSpan = document.createElement('span');
+                        unitSpan.textContent = `(${indicator.unit})`;
+
+                        // 创建标准范围说明
+                        const rangeSpan = document.createElement('span');
+                        rangeSpan.textContent = `标准范围：${indicator.standardRange}`;
+
+                        // 将标签、输入框、单位和范围添加到 wrapper 中
+                        inputWrapper.appendChild(label);
+                        inputWrapper.appendChild(input);
+                        inputWrapper.appendChild(unitSpan);
+                        inputWrapper.appendChild(rangeSpan);
+
+                        // 将输入框和说明添加到容器
+                        inputListContainer.appendChild(inputWrapper);
+                    });
 
 
+                })
+
+        }
+
+        function submitIndicator() {
+            // 获取elderId
+            const elderId = document.getElementById('elderId').value;
+
+            // 获取检查时间
+            let checkTime = document.getElementById('checkDate').value;
+            if (checkTime === null || checkTime === '') {
+                alert('请选择检查时间')
+                return
+            }
+            checkTime = formatDate(checkTime)
+            console.log('time: ' + checkTime)
+
+            // 获取所有的指标输入框
+            const indicatorInputs = document.querySelectorAll('.indicator-input-wrapper input');
+
+            // 构造ElderIndicatorDTO的数组
+            const elderIndicators = Array.from(indicatorInputs).filter(input => input.value !== null && input.value !== '')
+                .map((input, index) => {
+                    console.log('指标id ' + input.id.split('-')[1])
+                    console.log('指标值 ' + input.value)
+                    return {
+                        indicatorId: input.id.split('-')[1],  // 假设input的id是indicator-<index>
+                        value: parseFloat(input.value),  // 获取输入框的值，若为空则默认为0
+                    };
+            });
+
+            // 创建 PatchElderIndicatorDTO 对象
+            const patchElderIndicatorDTO = {
+                elderId: elderId,
+                checkTime: checkTime.toString(),
+                elderIndicators: elderIndicators,
+            };
+
+            // 发送请求
+            fetch('http://localhost/admin/indicator', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(patchElderIndicatorDTO),  // 发送JSON格式的请求体
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 处理返回的数据
+                if (data.code !== 200) {
+                    alert(data.msg);
+                    return
+                }
+                closeForm();  // 关闭浮动表单
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
     </script>
 </body>

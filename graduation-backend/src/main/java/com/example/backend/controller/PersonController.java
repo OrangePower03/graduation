@@ -35,8 +35,8 @@ public class PersonController extends BaseController {
     }
 
     @PreAuthorize("@MA.isElderOrYoungster()")
-    @GetMapping
-    public ResponseResult<List<PersonVO>> listRelationPerson(@RequestParam(value = "status", required = false) Integer status) {
+    @GetMapping("/{status}")
+    public ResponseResult<List<PersonVO>> listRelationPerson(@PathVariable(value = "status") Integer status) {
         return ok(personService.listRelationPerson(ObjectUtils.requireNonNullElse(status, UserConstants.RELATION_STATUS_NORMAL)));
     }
 

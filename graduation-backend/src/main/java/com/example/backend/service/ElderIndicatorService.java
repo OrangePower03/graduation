@@ -45,7 +45,7 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
     private Neo4jService neo4jService;
 
     @VerifyRequestBody
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public @NonNull Integer addElderIndicators(PatchElderIndicatorDTO indicators) {
         SysUser user = sysUserMapper.selectById(indicators.getElderId());
         AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);

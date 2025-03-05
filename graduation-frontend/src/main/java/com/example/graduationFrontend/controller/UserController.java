@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
@@ -28,13 +27,14 @@ public class UserController extends BaseController {
     public String showHomePage(HttpSession session, Model model) {
         try {
             UserInfoVO userInfo = DataUtils.getUserInfo(session);
-            switch (userInfo.getRoleName()) {
-                case PermissionConstants.ADMIN_KEY: return "/home/adminHome";
-                case PermissionConstants.ELDER_KEY: return "/home/elderHome";
-                case PermissionConstants.YOUNGSTER_KEY: return "/home/youngsterHome";
-                default: return "/home/adminHome";
+            if (userInfo.getId() == PermissionConstants.ADMIN_ID) {
+                return "/home/adminHome";
+            } else if (userInfo.getId() == PermissionConstants.ELDER_ID) {
+                return "/home/elderHome";
+            } else if (userInfo.getId() == PermissionConstants.YOUNGSTER_ID) {
+                return "/home/youngsterHome";
             }
-
+            throw new RuntimeException("不存在该角色");
         } catch (ErrorException e) {
             model.addAttribute("loginDTO", new LoginDTO());
             return "login";
@@ -73,13 +73,13 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/login")
-    public String handleLogin(LoginDTO loginDTO, HttpServletResponse response, HttpSession session, Model model) {
+    public String handleLogin(LoginDTO loginDTO, HttpSession session, Model model) {
 
         Request request = buildRequest("/login", Map.of(), null, HttpMethod.POST, loginDTO);
         ResponseResult<UserInfoVO> result = sendRequest(request, UserInfoVO.class);
         if (result.isSuccess()) {
             DataUtils.saveUserInfo(session, result.getData());
-            return "/home/adminHome";
+            return "redirect:/";
         } else {
             model.addAttribute("error", result);
             model.addAttribute("loginDTO", new LoginDTO());

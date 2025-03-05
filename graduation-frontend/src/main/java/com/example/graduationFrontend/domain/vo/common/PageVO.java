@@ -12,9 +12,13 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 public class PageVO<T extends BaseVO> extends BaseVO {
+    public final static int DEFAULT_PAGE_SIZE = 10;
+
     List<T> rows;
 
     int total;
 
     int current;
+
+    int pageSize = 10;
 }

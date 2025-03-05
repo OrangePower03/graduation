@@ -1,10 +1,12 @@
 package com.example.graduationFrontend.controller;
 
 import com.example.graduationFrontend.constants.HttpMethod;
+import com.example.graduationFrontend.domain.dto.indicator.PatchElderIndicatorDTO;
 import com.example.graduationFrontend.domain.dto.user.RoleDTO;
 import com.example.graduationFrontend.domain.dto.user.UserDTO;
 import com.example.graduationFrontend.domain.vo.common.PageVO;
 import com.example.graduationFrontend.domain.vo.common.ResponseResult;
+import com.example.graduationFrontend.domain.vo.indicator.IndicatorVO;
 import com.example.graduationFrontend.domain.vo.user.ListUserVO;
 import com.example.graduationFrontend.domain.vo.user.RoleVO;
 import com.example.graduationFrontend.domain.vo.user.UserInfoVO;
@@ -13,10 +15,7 @@ import com.example.graduationFrontend.utils.DataUtils;
 import okhttp3.Request;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -95,7 +94,7 @@ public class AdminController extends BaseController {
     @GetMapping("/user")
     public String operatorUserPage(HttpSession session, Model model) {
         String token = DataUtils.getUserToken(session);
-        Request request = buildGetRequest("/user", token, 1, 10, null);
+        Request request = buildGetRequest("/user", token, 1, PageVO.DEFAULT_PAGE_SIZE, null);
         ResponseResult<PageVO<ListUserVO>> result = sendRequestAsPage(request, ListUserVO.class);
         return toUserPage(session, model, new UserDTO(), result.getData());
     }
@@ -105,7 +104,16 @@ public class AdminController extends BaseController {
     public String handleUserSearch(HttpSession session, UserDTO userDTO, Model model) {
         String token = DataUtils.getUserToken(session);
 
-        Request request = buildGetRequest("/user", token, userDTO.getPageNum(), userDTO.getPageSize(), buildParam(userDTO));
+        Request request = buildGetRequest("/user", token, 1, PageVO.DEFAULT_PAGE_SIZE, buildParam(userDTO));
+        ResponseResult<PageVO<ListUserVO>> result = sendRequestAsPage(request, ListUserVO.class);
+        return toUserPage(session, model, userDTO, result.getData());
+    }
+
+    @GetMapping("/user/list/{pageNum}")
+    public String handleUserSearch(HttpSession session, UserDTO userDTO, Model model, @PathVariable int pageNum) {
+        String token = DataUtils.getUserToken(session);
+
+        Request request = buildGetRequest("/user", token, pageNum, PageVO.DEFAULT_PAGE_SIZE, buildParam(userDTO));
         ResponseResult<PageVO<ListUserVO>> result = sendRequestAsPage(request, ListUserVO.class);
         return toUserPage(session, model, userDTO, result.getData());
     }
@@ -120,6 +128,27 @@ public class AdminController extends BaseController {
         return toUserPage(session, model, userDTO, result.getData());
     }
 
+    @GetMapping("/indicator/list")
+    @ResponseBody
+    public List<IndicatorVO> handleIndicatorList(HttpSession session) {
+        Request request = buildGetRequest("/indicator", DataUtils.getUserToken(session), null);
+        ResponseResult<List<IndicatorVO>> result = sendRequestAsList(request, IndicatorVO.class);
+        if (result.isSuccess()) {
+            return result.getData();
+        }
+        throw new ErrorException(result);
+    }
+
+    @PostMapping("/indicator")
+    @ResponseBody
+    public ResponseResult<Integer> handleIndicatorList(@RequestBody PatchElderIndicatorDTO indicatorDTO, HttpSession session) {
+        Request request = buildRequest("/indicator/elder", DataUtils.getUserToken(session), null, HttpMethod.POST, indicatorDTO);
+        return sendRequest(request, Integer.class);
+    }
+
+
+
+
     private String toUserPage(HttpSession session, Model model, UserDTO userDTO, PageVO<ListUserVO> users) {
 
         Request request = buildGetRequest("/role", DataUtils.getUserToken(session), null);
@@ -128,7 +157,7 @@ public class AdminController extends BaseController {
             model.addAttribute("users", users.getRows());
             model.addAttribute("total", users.getTotal());
             model.addAttribute("current", users.getCurrent());
-            model.addAttribute("pageSize", (int) Math.ceil((double) users.getTotal() / users.getCurrent()));
+            model.addAttribute("size", (int) Math.ceil((double) users.getTotal() / users.getPageSize()));
             model.addAttribute("userDTO", userDTO);
             model.addAttribute("roles", result.getData());
             return "/admin/user";

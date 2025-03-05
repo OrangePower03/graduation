@@ -60,7 +60,7 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
         AssertUtils.isTrue(UserConstants.USER_SEX_MAN.equals(elderSex) || UserConstants.USER_SEX_WOMAN.equals(elderSex), AppHttpCode.USER_SEX_ERROR);
         String[] sexIndicator = indicator.getStandardRange().split(";");
         String indicatorRange = sexIndicator.length == 2 ? sexIndicator[elderSex] : sexIndicator[0];
-        String[] indicatorArr = indicatorRange.split(";");
+        String[] indicatorArr = indicatorRange.split("~");
         Double value = elderIndicator.getValue();
         double lowest = Double.parseDouble(indicatorArr[0].strip());
         double highest = Double.parseDouble(indicatorArr[1].strip());

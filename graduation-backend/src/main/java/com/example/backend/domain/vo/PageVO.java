@@ -20,13 +20,18 @@ public class PageVO<T extends BaseVO> extends BaseVO {
 
     int current;
 
+    int pageSize;
+
     public PageVO() {
         rows = new ArrayList<>();
-        total = 0;
+        this.total = 0;
+        this.current = 1;
+        this.pageSize = 10;
     }
 
     public <E> PageVO(Page<E> page, Class<T> voClass) {
         this.current = (int) page.getCurrent();
+        this.pageSize = Math.toIntExact(page.getSize());
         this.total = Math.toIntExact(page.getTotal());
         this.rows = page.getRecords().stream()
                 .map(record -> BeanCopyUtils.copyBean((BaseEntity) record, voClass))

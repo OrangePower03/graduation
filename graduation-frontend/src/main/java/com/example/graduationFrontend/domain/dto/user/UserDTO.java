@@ -18,8 +18,4 @@ public class UserDTO extends BaseDTO {
     private String phone;
 
     private Long roleId;
-
-    private int pageSize = 10;
-
-    private int pageNum = 1;
 }

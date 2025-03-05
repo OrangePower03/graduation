@@ -9,6 +9,7 @@ import com.example.graduationFrontend.domain.dto.BaseDTO;
 import com.example.graduationFrontend.domain.vo.BaseVO;
 import com.example.graduationFrontend.domain.vo.common.PageVO;
 import com.example.graduationFrontend.domain.vo.common.ResponseResult;
+import com.example.graduationFrontend.exception.ErrorException;
 import lombok.NonNull;
 import okhttp3.*;
 import org.springframework.stereotype.Controller;
@@ -124,6 +125,9 @@ public class BaseController {
             JSONObject middleBody = JSON.parseObject(bodyStr);
             int code = middleBody.getInteger("code");
             String msg = middleBody.getString("msg");
+            if (code != 200) {
+                throw new ErrorException(msg);
+            }
             List<T> data = middleBody.getJSONArray("data").toJavaList(bodyClass);
             return new ResponseResult<>(code, msg, data);
         } catch (IOException e) {
@@ -142,7 +146,7 @@ public class BaseController {
             int total = pageBody.getInteger("total");
             int current = pageBody.getInteger("current");
             List<T> rows = pageBody.getJSONArray("rows").toJavaList(bodyClass);
-            PageVO<T> data = new PageVO<>(rows, total, current);
+            PageVO<T> data = new PageVO<>(rows, total, current, PageVO.DEFAULT_PAGE_SIZE);
             return new ResponseResult<>(code, msg, data);
         } catch (IOException e) {
             throw new RuntimeException(e);
