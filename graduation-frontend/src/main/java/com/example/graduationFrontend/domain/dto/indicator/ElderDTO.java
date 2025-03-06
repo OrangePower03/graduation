@@ -1,6 +1,6 @@
-package com.example.graduationFrontend.domain.vo.indicator;
+package com.example.graduationFrontend.domain.dto.indicator;
 
-import com.example.graduationFrontend.domain.vo.BaseVO;
+import com.example.graduationFrontend.domain.dto.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,8 +12,9 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ElderBaseIndicatorVO extends BaseVO {
-    String checkTime;
+public class ElderDTO extends BaseDTO {
+    private String startTime;
 
-    Integer normal;
+    private Integer normal = -1;
+
 }

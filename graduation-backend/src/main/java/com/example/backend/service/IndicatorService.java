@@ -77,12 +77,24 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
         indicatorMap.clear();
         List<IndicatorVO> indicators = BeanCopyUtils.copyBeans(list(), IndicatorVO.class);
         for (IndicatorVO indicator : indicators) {
+            String range = indicator.getStandardRange();
+            if (range.contains(";")) {
+                String[] ranges = range.split(";");
+                range = "男：" + ranges[0] + "; 女：" + ranges[1];
+            }
+            indicator.setStandardRange(range);
             indicatorMap.put(indicator.getId().toString(), indicator);
         }
         redisCache.putAllWithExpire(RedisConstants.INDICATOR_MAP_KEY, indicatorMap, RedisConstants.INDICATOR_MAP_EXPIRE);
         return indicators;
     }
 
+    public String getStandardRange(Integer sex, String standardRange) {
+        if (standardRange.contains(";")) {
+            return standardRange.split(";")[sex];
+        }
+        return standardRange;
+    }
 
 }
 

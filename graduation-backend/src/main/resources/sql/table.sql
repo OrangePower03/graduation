@@ -86,7 +86,7 @@ create table `elder_indicator`(
     `id` bigint not null primary key auto_increment comment '主键',
     `elder_id` bigint not null comment '老人id',
     `indicator_id` bigint not null comment '指标id',
-    `value` decimal not null comment '指标值',
+    `value` decimal(10,5) not null comment '指标值',
     `normal` int not null comment '指标是否正常，正常为0，异常为1',
     `check_time` date not null comment '体检时间',
     `create_time` datetime not null default now() comment '创建时间',

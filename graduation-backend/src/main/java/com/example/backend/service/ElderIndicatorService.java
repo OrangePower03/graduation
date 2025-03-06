@@ -22,6 +22,7 @@ import com.example.backend.utils.AssertUtils;
 import com.example.backend.utils.PageUtils;
 import com.example.backend.utils.bean.BeanCopyUtils;
 import com.example.backend.utils.object.DateUtils;
+import com.example.backend.utils.object.ObjectUtils;
 import com.example.backend.utils.security.SecurityUtils;
 import com.example.backend.utils.web.AppHttpCode;
 import lombok.NonNull;
@@ -63,11 +64,12 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
         return this.saveBatch(elderIndicators) ? elderIndicators.size() : 0;
     }
 
-    public @NonNull PatchElderIndicatorVO getElderIndicators(Long elderId, Date startTime) {
+    public @NonNull PatchElderIndicatorVO getElderIndicators(Long elderId, Date startTime, Integer normal) {
         judgePermission(elderId);
         LambdaQueryWrapper<ElderIndicator> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ElderIndicator::getElderId, elderId);
         wrapper.ge(DateUtils.nonNull(startTime), ElderIndicator::getCheckTime, startTime);
+        wrapper.eq(ObjectUtils.nonNull(normal), ElderIndicator::getNormal, normal);
         wrapper.orderByDesc(ElderIndicator::getCheckTime);
         Page<ElderIndicator> page = this.page(PageUtils.getPage(), wrapper);
 //        List<ElderBaseIndicatorVO> collect = page.getRecords().stream()
@@ -80,6 +82,8 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
 
     public @NonNull List<ElderIndicatorDetailVO> getElderIndicatorDetail(Long elderId, Date checkTime) {
         judgePermission(elderId);
+        SysUser user = sysUserMapper.selectById(elderId);
+        AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
         LambdaQueryWrapper<ElderIndicator> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ElderIndicator::getElderId, elderId);
         wrapper.eq(ElderIndicator::getCheckTime, checkTime);
@@ -90,7 +94,7 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
             IndicatorVO indicator = indicatorService.getIndicator(indicatorId);
             elderIndicator.setIndicatorName(indicator.getName());
             elderIndicator.setUnit(indicator.getUnit());
-            elderIndicator.setStandardRange(indicator.getStandardRange());
+            elderIndicator.setStandardRange(indicatorService.getStandardRange(user.getSex(), indicator.getStandardRange()));
             if (!UserConstants.USER_INDICATOR_NORMAL.equals(elderIndicator.getNormal())) {
                 SuggestionDetailVO suggestion = neo4jService.getSuggestion(indicatorId, elderIndicator.getNormal());
                 elderIndicator.setSuggestion(suggestion);

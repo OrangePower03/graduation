@@ -16,6 +16,10 @@ public class DateUtils extends ObjectUtils {
 
     public static Date defaultFormat(String dateStr) {
         try {
+            if (StringUtils.isBlank(dateStr)) return null;
+            if(!dateStr.contains(" ")) {
+                dateStr += " 00:00:00";
+            }
             return DEFAULT_DATE_FORMAT.parse(dateStr);
         } catch (ParseException e) {
             throw new GlobalException(400, "日期格式不正确，请输入正确的日期格式:" + DATE_PATTERN);

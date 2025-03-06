@@ -29,12 +29,12 @@ public class PageVO<T extends BaseVO> extends BaseVO {
         this.pageSize = 10;
     }
 
-    public <E> PageVO(Page<E> page, Class<T> voClass) {
+    public <E extends BaseEntity> PageVO(Page<E> page, Class<T> voClass) {
         this.current = (int) page.getCurrent();
         this.pageSize = Math.toIntExact(page.getSize());
         this.total = Math.toIntExact(page.getTotal());
         this.rows = page.getRecords().stream()
-                .map(record -> BeanCopyUtils.copyBean((BaseEntity) record, voClass))
+                .map(record -> BeanCopyUtils.copyBean(record, voClass))
                 .collect(Collectors.toList());
     }
 

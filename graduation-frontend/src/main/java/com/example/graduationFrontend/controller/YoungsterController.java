@@ -2,19 +2,25 @@ package com.example.graduationFrontend.controller;
 
 import com.example.graduationFrontend.constants.HttpMethod;
 import com.example.graduationFrontend.constants.UserConstants;
+import com.example.graduationFrontend.domain.dto.indicator.ElderDTO;
 import com.example.graduationFrontend.domain.vo.common.PageVO;
 import com.example.graduationFrontend.domain.vo.common.ResponseResult;
+import com.example.graduationFrontend.domain.vo.indicator.ElderIndicatorDetailVO;
 import com.example.graduationFrontend.domain.vo.indicator.PatchElderIndicatorVO;
 import com.example.graduationFrontend.domain.vo.user.PersonVO;
 import com.example.graduationFrontend.domain.vo.user.UserInfoVO;
 import com.example.graduationFrontend.exception.ErrorException;
 import com.example.graduationFrontend.utils.DataUtils;
+import com.example.graduationFrontend.utils.DateUtils;
 import okhttp3.Request;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,10 +37,32 @@ public class YoungsterController extends BaseController {
 
     @GetMapping("/indicator/{id}")
     public String getElderIndicatorPage(HttpSession session, @PathVariable("id") Long id, Model model) {
+
         String token = DataUtils.getUserToken(session);
-        Request request = buildGetRequest("/indicator/elder/" + id, token, null);
-        ResponseResult<PatchElderIndicatorVO> result = sendRequest(request, PatchElderIndicatorVO.class);
-        return toElderIndicatorPage(model, result);
+        Request request = buildGetRequest("/indicator/elder/" + id, token, 1, null);
+        ResponseResult<PatchElderIndicatorVO> result = sendRequestAsPatch(request);
+        return toElderIndicatorPage(model, result, -1);
+    }
+
+    @PostMapping("/indicator/{elderId}")
+    public String getElderIndicatorPage(HttpSession session, ElderDTO elderDTO, Model model, @PathVariable Long elderId) {
+        return getElderIndicatorPage(session, elderDTO, model, elderId, 1);
+    }
+
+    @GetMapping("/indicator/{elderId}/{pageNum}")
+    public String getElderIndicatorPage(HttpSession session, ElderDTO elderDTO, Model model, @PathVariable Long elderId, @PathVariable Integer pageNum) {
+        String token = DataUtils.getUserToken(session);
+        Map<String, String> params = new HashMap<>();
+        if (elderDTO.getNormal() != -1) {
+            params.put("normal", String.valueOf(elderDTO.getNormal()));
+        }
+        if (!StringUtils.isEmpty(elderDTO.getStartTime())) {
+            params.put("startTime", elderDTO.getStartTime());
+        }
+
+        Request request = buildGetRequest("/indicator/elder/" + elderId, token, pageNum, params);
+        ResponseResult<PatchElderIndicatorVO> result = sendRequestAsPatch(request);
+        return toElderIndicatorPage(model, result, elderDTO.getNormal());
     }
 
     @GetMapping("/elder/bind/{id}")
@@ -47,6 +75,15 @@ public class YoungsterController extends BaseController {
         }
         throw new ErrorException(result);
     }
+
+    @GetMapping("/indicator/detail/{elderId}")
+    @ResponseBody
+    public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(HttpSession session, @PathVariable Long elderId, @RequestParam(value = "checkTime") String checkTime) {
+        String token = DataUtils.getUserToken(session);
+        Request request = buildGetRequest("/indicator/elder/detail/" + elderId, token, Map.of("checkTime", checkTime));
+        return sendRequestAsList(request, ElderIndicatorDetailVO.class);
+    }
+
 
 
     @GetMapping("/elder/exact")
@@ -67,11 +104,18 @@ public class YoungsterController extends BaseController {
         throw new ErrorException(result);
     }
 
-    private String toElderIndicatorPage(Model model, ResponseResult<PatchElderIndicatorVO> result) {
+    private String toElderIndicatorPage(Model model, ResponseResult<PatchElderIndicatorVO> result, Integer normal) {
+        if (!result.isSuccess()) {
+            throw new ErrorException(result);
+        }
         int total = result.getData().getAllIndicator().getTotal();
         int pageSize = result.getData().getAllIndicator().getPageSize();
         int size = (int) Math.ceil((double) total / pageSize);
-        model.addAttribute("elderId", result.getData().getElderId());
+        Long elderId = result.getData().getElderId();
+        ElderDTO elderDTO = new ElderDTO();
+        model.addAttribute("elderId", elderId);
+        model.addAttribute("elderDTO", elderDTO);
+        model.addAttribute("normal", normal);
         model.addAttribute("indicators", result.getData().getAllIndicator().getRows());
         model.addAttribute("total", total);
         model.addAttribute("pageSize", pageSize);

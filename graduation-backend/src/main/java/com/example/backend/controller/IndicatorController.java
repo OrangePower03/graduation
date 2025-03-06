@@ -7,6 +7,7 @@ import com.example.backend.domain.vo.indicator.IndicatorVO;
 import com.example.backend.domain.vo.indicator.PatchElderIndicatorVO;
 import com.example.backend.service.ElderIndicatorService;
 import com.example.backend.service.IndicatorService;
+import com.example.backend.utils.object.DateUtils;
 import com.example.backend.utils.security.SecurityUtils;
 import com.example.backend.utils.web.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,25 +40,25 @@ public class IndicatorController extends BaseController {
 
     @PreAuthorize("@MA.isYoungster()")
     @GetMapping("/elder/{id}")
-    public ResponseResult<PatchElderIndicatorVO> getElderIndicators(@PathVariable("id") Long elderId, Date startTime) {
-        return ok(elderIndicatorService.getElderIndicators(elderId, startTime));
+    public ResponseResult<PatchElderIndicatorVO> getElderIndicators(@PathVariable("id") Long elderId, String startTime, Integer normal) {
+        return ok(elderIndicatorService.getElderIndicators(elderId, DateUtils.defaultFormat(startTime), normal));
     }
 
     @PreAuthorize("@MA.isElder()")
     @GetMapping("/elder")
-    public ResponseResult<PatchElderIndicatorVO> getElderIndicators(Date startTime) {
-        return ok(elderIndicatorService.getElderIndicators(SecurityUtils.getUserId(), startTime));
+    public ResponseResult<PatchElderIndicatorVO> getElderIndicators(String startTime, Integer normal) {
+        return ok(elderIndicatorService.getElderIndicators(SecurityUtils.getUserId(), DateUtils.defaultFormat(startTime), normal));
     }
 
     @PreAuthorize("@MA.isYoungster()")
     @GetMapping("/elder/detail/{elderId}")
-    public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@PathVariable Long elderId, @RequestParam(value = "checkTime") Date checkTime) {
-        return ok(elderIndicatorService.getElderIndicatorDetail(elderId, checkTime));
+    public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@PathVariable Long elderId, @RequestParam(value = "checkTime") String checkTime) {
+        return ok(elderIndicatorService.getElderIndicatorDetail(elderId, DateUtils.defaultFormat(checkTime)));
     }
 
     @PreAuthorize("@MA.isElder()")
     @GetMapping("/elder/detail")
-    public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@RequestParam(value = "checkTime") Date checkTime) {
-        return ok(elderIndicatorService.getElderIndicatorDetail(SecurityUtils.getUserId(), checkTime));
+    public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@RequestParam(value = "checkTime") String checkTime) {
+        return ok(elderIndicatorService.getElderIndicatorDetail(SecurityUtils.getUserId(), DateUtils.defaultFormat(checkTime)));
     }
 }

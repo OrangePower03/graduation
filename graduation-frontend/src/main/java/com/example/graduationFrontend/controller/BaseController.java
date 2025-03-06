@@ -9,6 +9,8 @@ import com.example.graduationFrontend.domain.dto.BaseDTO;
 import com.example.graduationFrontend.domain.vo.BaseVO;
 import com.example.graduationFrontend.domain.vo.common.PageVO;
 import com.example.graduationFrontend.domain.vo.common.ResponseResult;
+import com.example.graduationFrontend.domain.vo.indicator.ElderBaseIndicatorVO;
+import com.example.graduationFrontend.domain.vo.indicator.PatchElderIndicatorVO;
 import com.example.graduationFrontend.exception.ErrorException;
 import lombok.NonNull;
 import okhttp3.*;
@@ -44,6 +46,13 @@ public class BaseController {
                                    Map<String, String> param) {
 
         return buildGetRequest(url, Map.of(HttpConstants.HEADER_AUTHENTICATION, authentication), param);
+    }
+
+    public Request buildGetRequest(@NonNull String url,
+                                   String authentication,
+                                   int pageNum,
+                                   Map<String, String> param) {
+        return buildGetRequest(url, Map.of(HttpConstants.HEADER_AUTHENTICATION, authentication, HttpConstants.HEADER_PAGE_NUM, String.valueOf(pageNum), HttpConstants.HEADER_PAGE_SIZE, "10"), param);
     }
 
     public Request buildGetRequest(@NonNull String url,
@@ -113,6 +122,31 @@ public class BaseController {
             String bodyStr = response.body().string();
             JSONObject middleBody = JSON.parseObject(bodyStr);
             return new ResponseResult<>(middleBody, bodyClass);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResponseResult<PatchElderIndicatorVO> sendRequestAsPatch(Request request) {
+        try (Response response = client.newCall(request).execute()) {
+            assert response.body() != null;
+            String bodyStr = response.body().string();
+            JSONObject middleBody = JSON.parseObject(bodyStr);
+            int code = middleBody.getInteger("code");
+            String msg = middleBody.getString("msg");
+            if (code != 200) {
+                return new ResponseResult<>(code, msg, null);
+            }
+            PatchElderIndicatorVO data = new PatchElderIndicatorVO();
+            middleBody = middleBody.getJSONObject("data");
+            data.setElderId(middleBody.getLong("elderId"));
+            middleBody = middleBody.getJSONObject("allIndicator");
+            int total = middleBody.getInteger("total");
+            int current = middleBody.getInteger("current");
+            int pageSize = middleBody.getInteger("pageSize");
+            List<ElderBaseIndicatorVO> rows = middleBody.getJSONArray("rows").toJavaList(ElderBaseIndicatorVO.class);
+            data.setAllIndicator(new PageVO<>(rows, total, current, pageSize));
+            return new ResponseResult<>(code, msg, data);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
