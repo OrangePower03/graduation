@@ -25,6 +25,10 @@ public class CollectionUtils extends ObjectUtils {
         return nonNull(col) && !col.isEmpty();
     }
 
+    public static boolean notEmpty(Map<?, ?> map) {
+        return !isEmpty(map);
+    }
+
     public static <T> List<T> toList(T[] array) {
         return new ArrayList<>(Arrays.asList(array));
     }

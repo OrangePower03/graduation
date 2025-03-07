@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>个人资料</title>
+    <style>
+        /* 页面布局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 主容器 */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #fff;
+            padding-top: 20px;
+            height: 100%;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 15px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar li:hover {
+            background-color: #34495e;
+        }
+
+        /* 右侧内容区 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* 个人中心外部容器 */
+        .user-dropdown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        /* 下拉按钮 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 个人中心按钮样式 */
+        .dropbtn {
+            background-color: transparent; /* 透明背景 */
+            border: none; /* 去掉按钮边框 */
+            color: black; /* 按钮文字颜色改为黑色 */
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 按钮鼠标悬浮时样式 */
+        .dropbtn:hover {
+            background-color: rgba(255, 255, 255, 0.5); /* 背景变为透明白色 */
+        }
+
+        /* 下拉菜单 */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        /* 鼠标悬停时显示下拉框 */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* 下拉菜单中的链接样式 */
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 鼠标悬停时，链接背景色变 */
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        /* 基本样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    padding: 20px;
+}
+
+/* 用户信息容器 */
+.user-info-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 表单标题 */
+.user-info-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* 每行信息 */
+.info-row {
+    margin-bottom: 15px;
+}
+
+/* 标签 */
+.info-row label {
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 输入框 */
+.info-row input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* 输入框聚焦效果 */
+.info-row input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* 提交按钮 */
+.submit-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 提交按钮悬浮效果 */
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* 只读字段样式 */
+.info-row span {
+    display: inline-block;
+    width: 100%;
+    padding: 8px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+}
+
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #34495e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 左侧导航栏 -->
+        <div class="sidebar">
+            <ul>
+                <li><a href="/" th:href="@{/}">首页</a></li>
+            </ul>
+        </div>
+
+        <!-- 右侧内容区域 -->
+        <div class="main-content">
+            <!-- 右上角个人中心 -->
+            <div class="user-dropdown">
+                <div class="dropdown">
+                    <button class="dropbtn">个人中心</button>
+                    <div class="dropdown-content">
+                        <a href="/logout" th:href="@{/logout}">退出登录</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户信息表单 -->
+            <div class="user-info-container">
+                <form th:action="@{/updateUserInfo}" method="post" id="userInfoForm">
+                    <div class="info-row">
+                        <label for="id">ID:</label>
+                        <span id="id" th:text="${userInfo.id}"></span>
+                    </div>
+                    <div class="info-row">
+                        <label for="name">姓名:</label>
+                        <span id="name" th:text="${userInfo.name}"></span>
+                    </div>
+                    <div class="info-row">
+                        <label for="sex">性别:</label>
+                        <span id="sex" th:text="${userInfo.sex == 0 ? '男' : '女'}"></span>
+                    </div>
+                    <div class="info-row">
+                        <label for="roleName">角色:</label>
+                        <span id="roleName" th:text="${userInfo.roleName}"></span>
+                    </div>
+                    <div class="info-row">
+                        <label for="phone">手机号码:</label>
+                        <input type="text" id="phone" name="phone" th:value="${userInfo.phone}">
+                    </div>
+                    <div class="info-row">
+                        <label for="username">用户名:</label>
+                        <input type="text" id="username" name="username" th:value="${userInfo.username}">
+                    </div>
+                    <div class="info-row">
+                        <button type="submit" class="submit-button">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -5,6 +5,7 @@ import com.example.graduationFrontend.constants.HttpMethod;
 import com.example.graduationFrontend.constants.PermissionConstants;
 import com.example.graduationFrontend.domain.dto.user.LoginDTO;
 import com.example.graduationFrontend.domain.dto.user.RegisterDTO;
+import com.example.graduationFrontend.domain.dto.user.UserDTO;
 import com.example.graduationFrontend.domain.vo.common.ResponseResult;
 import com.example.graduationFrontend.domain.vo.user.RegisterVO;
 import com.example.graduationFrontend.domain.vo.user.UserInfoVO;
@@ -27,11 +28,11 @@ public class UserController extends BaseController {
     public String showHomePage(HttpSession session, Model model) {
         try {
             UserInfoVO userInfo = DataUtils.getUserInfo(session);
-            if (userInfo.getId() == PermissionConstants.ADMIN_ID) {
+            if (userInfo.getRoleId() == PermissionConstants.ADMIN_ID) {
                 return "/home/adminHome";
-            } else if (userInfo.getId() == PermissionConstants.ELDER_ID) {
+            } else if (userInfo.getRoleId() == PermissionConstants.ELDER_ID) {
                 return "/home/elderHome";
-            } else if (userInfo.getId() == PermissionConstants.YOUNGSTER_ID) {
+            } else if (userInfo.getRoleId() == PermissionConstants.YOUNGSTER_ID) {
                 return "/home/youngsterHome";
             }
             throw new RuntimeException("不存在该角色");
@@ -62,6 +63,13 @@ public class UserController extends BaseController {
             DataUtils.removeUserInfo(session);
         }
         return "redirect:/login";
+    }
+
+    @GetMapping("/user/detail")
+    public String getUserDetailPage(HttpSession session, Model model) {
+        UserInfoVO userInfo = DataUtils.getUserInfo(session);
+        model.addAttribute("userInfo", userInfo);
+        return "userInfo";
     }
 
     /*---------------处理http--------------*/
@@ -98,5 +106,23 @@ public class UserController extends BaseController {
             model.addAttribute("registerDTO", new RegisterDTO());
             return "register";
         }
+    }
+
+    @PostMapping("/updateUserInfo")
+    public String handleUpdateUserInfo(UserInfoVO userInfo, HttpSession session, Model model) {
+        String token = DataUtils.getUserToken(session);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setPhone(userInfo.getPhone());
+        userDTO.setUsername(userInfo.getUsername());
+        Request request = buildRequest("/updateUserInfo", token, null, HttpMethod.PUT, userDTO);
+        ResponseResult<UserInfoVO> result = sendRequest(request, UserInfoVO.class);
+        if (result.isSuccess()) {
+            userInfo = DataUtils.getUserInfo(session);
+            userInfo.setUsername(result.getData().getUsername());
+            userInfo.setPhone(result.getData().getPhone());
+            DataUtils.saveUserInfo(session, userInfo);
+            return "redirect:/user/detail";
+        }
+        throw new ErrorException(result);
     }
 }

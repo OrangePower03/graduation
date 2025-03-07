@@ -8,6 +8,7 @@ import com.example.backend.annotation.VerifyRequestBody;
 import com.example.backend.constants.RedisConstants;
 import com.example.backend.domain.dto.user.LoginDTO;
 import com.example.backend.domain.dto.user.RegisterDTO;
+import com.example.backend.domain.dto.user.UserDTO;
 import com.example.backend.domain.entity.SysRole;
 import com.example.backend.domain.entity.SysUser;
 import com.example.backend.domain.vo.PageVO;
@@ -122,7 +123,7 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
         } else if (ELDER_ROLE_ID.equals(userRole.getId())) {
             // 如果是老人，则只能添加年轻人
             AssertUtils.isTrue(YOUNGSTER_ROLE_ID.equals(relationUser.getRoleId()), AppHttpCode.RELATION_USER_ROLE_ERROR);
-            int addCount = this.baseMapper.addRelation(relationUserId, user.getId());
+            int addCount = this.baseMapper.affirmRelation(relationUserId, user.getId());
             AssertUtils.isTrue(addCount > 0, AppHttpCode.RELATION_NOT_FOUND_ERROR);
         } else {
             throw new IllegalArgumentException("用户的角色错误");
@@ -151,6 +152,9 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
             idList = this.baseMapper.getElderIdByYoungsterId(userId, status);
         } else {
             idList = this.baseMapper.getYoungsterIdByElderId(userId, status);
+        }
+        if (CollectionUtils.isEmpty(idList)) {
+            return Collections.emptyList();
         }
         List<SysUser> relationUsers = this.listByIds(idList);
         return BeanCopyUtils.copyBeans(relationUsers, PersonVO.class);
@@ -197,5 +201,21 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
 
     private boolean operatorMyself(Long userId) {
         return userId.equals(SecurityUtils.getUserId());
+    }
+
+    public @NonNull UserInfoVO updateUserInfo(UserDTO user) {
+        AssertUtils.isTrue(StringUtils.isMatch(user.getPhone(), PHONE_FORMAT), AppHttpCode.PHONE_FORMAT_ERROR);
+        SysUser sysUser = SecurityUtils.getUser();
+        if (!sysUser.getPhone().equals(user.getPhone())) {
+            LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SysUser::getPhone, user.getPhone());
+            long phoneCount = this.count(wrapper);
+            AssertUtils.isTrue(phoneCount == 0, AppHttpCode.PHONE_EXISTS);
+        }
+
+        sysUser.setPhone(user.getPhone());
+        sysUser.setUsername(user.getUsername());
+        this.updateById(sysUser);
+        return BeanCopyUtils.copyBean(sysUser, UserInfoVO.class);
     }
 }

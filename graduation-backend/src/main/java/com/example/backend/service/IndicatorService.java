@@ -43,7 +43,7 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
         IndicatorVO res;
         if (ObjectUtils.nonNull(res = indicatorMap.get(id.toString()))) return res;
         Map<String, Object> map = redisCache.get(RedisConstants.INDICATOR_MAP_KEY);
-        if (ObjectUtils.nonNull(map)) {
+        if (CollectionUtils.notEmpty(map)) {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 indicatorMap.put(entry.getKey(), (IndicatorVO) entry.getValue());
             }

@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.domain.dto.user.LoginDTO;
 import com.example.backend.domain.dto.user.RegisterDTO;
+import com.example.backend.domain.dto.user.UserDTO;
 import com.example.backend.domain.vo.PageVO;
 import com.example.backend.domain.vo.user.ListUserVO;
 import com.example.backend.domain.vo.user.UserInfoVO;
@@ -32,6 +33,11 @@ public class UserController extends BaseController {
     public ResponseResult<Void> logout() {
         userService.logout();
         return ok();
+    }
+
+    @PutMapping("/updateUserInfo")
+    public ResponseResult<UserInfoVO> updateUserInfo(@RequestBody UserDTO user) {
+        return ok(userService.updateUserInfo(user));
     }
 
     @PreAuthorize("@MA.isAdmin()")
