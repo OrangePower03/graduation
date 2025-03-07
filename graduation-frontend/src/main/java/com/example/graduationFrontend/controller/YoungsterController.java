@@ -95,6 +95,17 @@ public class YoungsterController extends BaseController {
         return sendRequest(request, PersonVO.class);
     }
 
+    @PostMapping("/elder/delete/{relationId}")
+    public String deleteElder(@PathVariable("relationId") Long relationId, HttpSession session) {
+        String token = DataUtils.getUserToken(session);
+        Request request = buildRequest("/person/" + relationId, token, null, HttpMethod.DELETE, null);
+        ResponseResult<UserInfoVO> result = sendRequest(request, UserInfoVO.class);
+        if (result.isSuccess()) {
+            return "redirect:/youngster/elder/0";
+        }
+        throw new ErrorException(result);
+    }
+
     private String toElderPage(Model model, ResponseResult<List<PersonVO>> result, Integer status) {
         if (result.isSuccess()) {
             model.addAttribute("elders", result.getData());
