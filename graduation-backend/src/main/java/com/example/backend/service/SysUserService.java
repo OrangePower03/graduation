@@ -110,10 +110,10 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
     }
 
     public @NonNull UserInfoVO addPersonRelation(@NonNull Long relationUserId) {
-        SysUser relationUser = this.getById(relationUserId);
+        SysUser relationUser = this.getById(relationUserId); // 根据id获取用户
         AssertUtils.nonNull(relationUser, AppHttpCode.USER_NOT_FOUND_ERROR);
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        SysRole userRole = loginUser.getRole();
+        SysRole userRole = loginUser.getRole(); // 获取发起请求的用户的角色信息
         SysUser user = loginUser.getUser();
         if (YOUNGSTER_ROLE_ID.equals(userRole.getId())) {
             // 如果是年轻人，则只能添加老人

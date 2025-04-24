@@ -54,6 +54,7 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
         for (ElderIndicatorDTO elderIndicator : indicators.getElderIndicators()) {
             AssertUtils.nonNull(elderIndicator.getIndicatorId(), AppHttpCode.REQUEST_DATA_FIELD_IS_NULL);
             AssertUtils.nonNull(elderIndicator.getValue(), AppHttpCode.REQUEST_DATA_FIELD_IS_NULL);
+            // 检测是否超出正常范围，记录进数据库
             Integer normalStatus = indicatorService.getNormalStatus(user.getSex(), elderIndicator);
             ElderIndicator indicator = BeanCopyUtils.copyBean(elderIndicator, ElderIndicator.class);
             indicator.setElderId(indicators.getElderId());
@@ -72,10 +73,6 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
         wrapper.eq(ObjectUtils.nonNull(normal), ElderIndicator::getNormal, normal);
         wrapper.orderByDesc(ElderIndicator::getCheckTime);
         Page<ElderIndicator> page = this.page(PageUtils.getPage(), wrapper);
-//        List<ElderBaseIndicatorVO> collect = page.getRecords().stream()
-//                .map(record -> BeanCopyUtils.copyBean(record, ElderBaseIndicatorVO.class))
-//                .collect(Collectors.toList());
-//        PageVO<ElderBaseIndicatorVO> baseIndicator = new PageVO<>(collect, Math.toIntExact(page.getTotal()));
         PageVO<ElderBaseIndicatorVO> baseIndicator = new PageVO<>(page, ElderBaseIndicatorVO.class);
         return new PatchElderIndicatorVO(elderId, baseIndicator);
     }
