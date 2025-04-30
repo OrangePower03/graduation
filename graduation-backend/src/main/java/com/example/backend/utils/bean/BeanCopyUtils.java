@@ -41,7 +41,7 @@ public class BeanCopyUtils {
      * @param targetClass entity对象
      * @return entity对象
      */
-    public static<V extends BaseEntity> V copyBean(BaseDTO source, Class<V> targetClass){
+    public static <V extends BaseEntity> V copyBean(BaseDTO source, Class<V> targetClass) {
         try {
             V target = targetClass.getConstructor().newInstance();
             return doCopy(source, target);
@@ -54,7 +54,7 @@ public class BeanCopyUtils {
     /**
      * 复制多个数据库实体类至vo类,调用该方法表示vo类未创建
      */
-    public static <V extends BaseVO> List<V> copyBeans(Collection<? extends BaseEntity> sourceList, Class<V> targetClass){
+    public static <V extends BaseVO> List<V> copyBeans(Collection<? extends BaseEntity> sourceList, Class<V> targetClass) {
 
         return sourceList.stream()
                 .map(baseEntity -> copyBean(baseEntity, targetClass))

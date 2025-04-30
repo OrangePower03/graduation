@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.domain.dto.indicator.IndicatorDTO;
 import com.example.backend.domain.dto.indicator.PatchElderIndicatorDTO;
 import com.example.backend.domain.vo.PageVO;
 import com.example.backend.domain.vo.indicator.ElderIndicatorDetailVO;
@@ -31,6 +32,25 @@ public class IndicatorController extends BaseController {
     public ResponseResult<List<IndicatorVO>> listIndicator() {
         return ok(indicatorService.listIndicator());
     }
+
+    @PreAuthorize("@MA.isAdmin()")
+    @PostMapping
+    public ResponseResult<IndicatorVO> addIndicator(@RequestBody IndicatorDTO indicatorDTO) {
+        return ok(indicatorService.addIndicator(indicatorDTO));
+    }
+
+    @PreAuthorize("@MA.isAdmin()")
+    @PutMapping("/{id}")
+    public ResponseResult<IndicatorVO> updateIndicator(@RequestBody IndicatorDTO indicatorDTO, @PathVariable("id") Long id) {
+        return ok(indicatorService.updateIndicator(indicatorDTO, id));
+    }
+
+    @PreAuthorize("@MA.isAdmin()")
+    @DeleteMapping("/{id}")
+    public ResponseResult<IndicatorVO> removeIndicator(@PathVariable("id") Long id) {
+        return ok(indicatorService.removeIndicator(id));
+    }
+
 
     @PreAuthorize("@MA.isAdmin()")
     @PostMapping("/elder")

@@ -2,9 +2,11 @@ package com.example.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.backend.annotation.VerifyRequestBody;
 import com.example.backend.constants.RedisConstants;
 import com.example.backend.constants.UserConstants;
 import com.example.backend.domain.dto.indicator.ElderIndicatorDTO;
+import com.example.backend.domain.dto.indicator.IndicatorDTO;
 import com.example.backend.domain.entity.Indicator;
 import com.example.backend.domain.vo.indicator.IndicatorVO;
 import com.example.backend.mapper.IndicatorMapper;
@@ -55,6 +57,39 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
         return res;
     }
 
+    @VerifyRequestBody
+    public IndicatorVO addIndicator(IndicatorDTO indicatorDTO) {
+        Indicator indicator = BeanCopyUtils.copyBean(indicatorDTO, Indicator.class);
+        save(indicator);
+        removeCacheIndicator();
+        return BeanCopyUtils.copyBean(indicator, IndicatorVO.class);
+    }
+
+    @VerifyRequestBody
+    public IndicatorVO updateIndicator(IndicatorDTO indicatorDTO, Long id) {
+        Indicator indicator = BeanCopyUtils.copyBean(indicatorDTO, Indicator.class);
+        indicator.setId(id);
+        updateById(indicator);
+        removeCacheIndicator();
+        return BeanCopyUtils.copyBean(indicator, IndicatorVO.class);
+    }
+
+    public IndicatorVO removeIndicator(Long id) {
+        AssertUtils.nonNull(id, AppHttpCode.INDICATOR_NOT_FOUND_ERROR);
+        Indicator indicator = getById(id);
+        AssertUtils.nonNull(id, AppHttpCode.INDICATOR_NOT_FOUND_ERROR);
+        removeById(id);
+        removeCacheIndicator();
+        return BeanCopyUtils.copyBean(indicator, IndicatorVO.class);
+    }
+
+    private void removeCacheIndicator() {
+        redisCache.remove(RedisConstants.INDICATOR_MAP_KEY);
+        indicatorMap.clear();
+    }
+
+
+
     public Integer getNormalStatus(Integer elderSex, ElderIndicatorDTO elderIndicator) {
         IndicatorVO indicator = getIndicator(elderIndicator.getIndicatorId());
         AssertUtils.isTrue(UserConstants.USER_SEX_MAN.equals(elderSex) || UserConstants.USER_SEX_WOMAN.equals(elderSex), AppHttpCode.USER_SEX_ERROR);
@@ -95,6 +130,5 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
         }
         return standardRange;
     }
-
 }
 
