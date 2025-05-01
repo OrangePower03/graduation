@@ -14,6 +14,7 @@ public class AppHttpCode {
     public static final AppHttpCode NETWORK_ERROR = new AppHttpCode(HttpStatus.SYSTEM_ERROR,"网络异常，请稍后再试");
 
     // 客户端错误
+    public static final AppHttpCode INDICATOR_RANGE_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"指标范围的格式错误");
     public static final AppHttpCode PAGE_PARAM_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"分页参数数据范围错误");
     public static final AppHttpCode PHONE_FORMAT_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"手机格式错误");
     public static final AppHttpCode USER_SEX_ERROR = new AppHttpCode(HttpStatus.BAD_REQUEST,"用户性别错误");

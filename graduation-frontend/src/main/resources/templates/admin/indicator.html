@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>指标管理</title>
     <style>
@@ -310,7 +310,7 @@
                         <th>ID</th>
                         <th>指标名</th>
                         <th>单位</th>
-                        <th>范围</th>
+                        <th>正常范围</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -319,7 +319,8 @@
                         <td th:text="${indicator.id}"></td>
                         <td th:text="${indicator.name}"></td>
                         <td th:text="${indicator.unit}"></td>
-                        <td th:text="${indicator.standardRange}"></td>
+                        <td th:if="${indicator.standardRange.contains(';')}" th:utext="${indicator.standardRange.split(';')[0]} + '</br>' +${indicator.standardRange.split(';')[1]}"></td>
+                        <td th:if="!${indicator.standardRange.contains(';')}" th:text="${indicator.standardRange}"></td>
                         <td>
                             <!-- 修改按钮 -->
                             <button type="button" class="edit-button"  th:attr="data-indicator-id=${indicator.id}, data-indicator-name=${indicator.name}, data-indicator-unit=${indicator.unit}, data-indicator-range=${indicator.standardRange}" onclick="openEditForm(this)">修改</button>
@@ -338,7 +339,7 @@
         <div id="addOverlay" class="overlay">
             <div class="popup">
                 <h3>新增指标</h3>
-                <form th:action="@{/indicator/add}" method="post" th:object="${indicatorDTO}">
+                <form th:action="@{/indicator/add}" method="post" th:object="${addIndicatorDTO}">
                     <div>
                         <label for="name">指标名</label>
                         <input type="text" id="name" name="name" th:field="*{name}" required="required" placeholder="请输入指标名" />
@@ -348,8 +349,20 @@
                         <input type="text" id="unit" name="unit" th:field="*{unit}" required="required" placeholder="请输入单位" />
                     </div>
                     <div>
-                        <label for="range">范围</label>
-                        <input type="text" id="range" name="range" th:field="*{standardRange}" required="required" placeholder="请输入范围（如：1.0~10.0）" />
+                        <label>正常范围</label>
+                        <!-- 男性范围 -->
+                        <div class="range-container">
+                            <input type="number" id="manRangeL" name="rangeL" step="0.01" th:field="*{manStandardRangeL}" placeholder="男性指标下限数值" min="0" onfocusout="validateRange('manRangeL', 'manRangeR')" />
+                            <span>~</span>
+                            <input type="number" id="manRangeR" name="rangeR" step="0.01" th:field="*{manStandardRangeR}" placeholder="男性指标上限数值" min="0" onfocusout="validateRange('manRangeL', 'manRangeR')" />
+                        </div>
+
+                        <!-- 女性范围 -->
+                        <div class="range-container">
+                            <input type="number" id="womanRangeL" name="rangeL" step="0.01" th:field="*{womanStandardRangeL}" placeholder="女性指标下限数值" min="0" onfocusout="validateRange('womanRangeL', 'womanRangeR')" />
+                            <span>~</span>
+                            <input type="number" id="womanRangeR" name="rangeR" step="0.01" th:field="*{womanStandardRangeR}" placeholder="女性指标上限数值" min="0" onfocusout="validateRange('womanRangeL', 'womanRangeR')" />
+                        </div>
                     </div>
                     <div>
                         <button type="submit">提交</button>
@@ -373,8 +386,30 @@
                         <input type="text" id="editUnit" name="unit" required="required" />
                     </div>
                     <div>
-                        <label for="editRange">范围</label>
-                        <input type="text" id="editRange" name="standardRange" required="required" />
+                        <label>正常范围</label>
+                        <!-- 男性范围 -->
+                        <div class="range-container range-sex">
+                            <input type="number" id="editManRangeL" name="manRangeL" step="0.01" placeholder="男性指标下限数值" min="0" onfocusout="validateRange('editManRangeL', 'editManRangeR')" />
+                            <span>~</span>
+                            <input type="number" id="editManRangeR" name="manRangeR" step="0.01" placeholder="男性指标上限数值" min="0" onfocusout="validateRange('editManRangeL', 'editManRangeR')" />
+                        </div>
+
+                        <!-- 女性范围 -->
+                        <div class="range-container range-sex">
+                            <input type="number" id="editWomanRangeL" name="womanRangeL" step="0.01" placeholder="女性指标下限数值" min="0" onfocusout="validateRange('editWomanRangeL', 'editWomanRangeR')" />
+                            <span>~</span>
+                            <input type="number" id="editWomanRangeR" name="womanRangeR" step="0.01" placeholder="女性指标上限数值" min="0" onfocusout="validateRange('editWomanRangeL', 'editWomanRangeR')" />
+                        </div>
+
+                        <!--  没有性别的区别  -->
+                        <div class="range-container range-non-sex">
+                            <input type="number" id="editRangeL" name="rangeL" step="0.01" placeholder="指标下限数值" min="0" onfocusout="validateRange('womanRangeL', 'womanRangeR')" />
+                            <span>~</span>
+                            <input type="number" id="editRangeR" name="rangeR" step="0.01" placeholder="指标上限数值" min="0" onfocusout="validateRange('womanRangeL', 'womanRangeR')" />
+                        </div>
+
+<!--                        <label for="editRange">范围</label>-->
+<!--                        <input type="text" id="editRange" name="standardRange" required="required" />-->
                     </div>
                     <div class="form-inline">
                         <button type="submit">提交</button>
@@ -407,7 +442,28 @@
             document.getElementById('editId').value = indicatorId;
             document.getElementById('editName').value = indicatorName;
             document.getElementById('editUnit').value = indicatorUnit;
-            document.getElementById('editRange').value = indicatorRange;
+
+            // document.getElementById('editRange').value = indicatorRange;
+            ranges = indicatorRange.split(';')
+            if (ranges.length === 2) {
+                console.log(ranges[0].substring(2))
+                console.log(ranges[1].substring(3))
+                document.getElementById('editManRangeL').value = ranges[0].substring(2).split(' ~ ')[0];
+                document.getElementById('editManRangeR').value = ranges[0].substring(2).split(' ~ ')[1];
+                document.getElementById('editWomanRangeL').value = ranges[1].substring(3).split(' ~ ')[0];
+                document.getElementById('editWomanRangeR').value = ranges[1].substring(3).split(' ~ ')[1];
+                document.getElementsByClassName('range-sex').item(0).style.display = 'flex';
+                document.getElementsByClassName('range-sex').item(1).style.display = 'flex';
+                document.getElementsByClassName('range-non-sex').item(0).style.display = 'none';
+            }
+            else {
+                console.log(ranges[0])
+                document.getElementById('editRangeL').value = ranges[0].split(' ~ ')[0]
+                document.getElementById('editRangeR').value = ranges[0].split(' ~ ')[1]
+                document.getElementsByClassName('range-sex').item(0).style.display = 'none';
+                document.getElementsByClassName('range-sex').item(1).style.display = 'none';
+                document.getElementsByClassName('range-non-sex').item(0).style.display = 'flex';
+            }
 
             document.getElementById('editOverlay').style.display = 'flex';
         }
@@ -415,6 +471,21 @@
         // 关闭编辑表单
         function closeEditIndicatorForm() {
             document.getElementById('editOverlay').style.display = 'none';
+        }
+
+        // 实时验证下限和上限关系
+        function validateRange(rangeLId, rangeRId) {
+            var lowerLimit = parseFloat(document.getElementById(rangeLId).value);
+            var upperLimit = parseFloat(document.getElementById(rangeRId).value);
+
+            if (lowerLimit && upperLimit) {
+                if (lowerLimit >= upperLimit) {
+                    alert("下限值不能大于或等于上限值！");
+                    document.getElementById(rangeRId).setCustomValidity("上限值必须大于下限值");
+                } else {
+                    document.getElementById(rangeRId).setCustomValidity("");
+                }
+            }
         }
     </script>
 </body>

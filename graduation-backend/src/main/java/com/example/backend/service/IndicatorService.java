@@ -59,6 +59,10 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
 
     @VerifyRequestBody
     public IndicatorVO addIndicator(IndicatorDTO indicatorDTO) {
+        String range = indicatorDTO.getStandardRange();
+        boolean validFormat = range.matches("(\\d+\\.?\\d*) ~ (\\d+\\.?\\d*);(\\d+\\.?\\d*) ~ (\\d+\\.?\\d*)") ||
+               range.matches("(\\d+\\.?\\d*) ~ (\\d+\\.?\\d*)");
+        AssertUtils.isTrue(validFormat, AppHttpCode.INDICATOR_RANGE_ERROR);
         Indicator indicator = BeanCopyUtils.copyBean(indicatorDTO, Indicator.class);
         save(indicator);
         removeCacheIndicator();
@@ -67,6 +71,10 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
 
     @VerifyRequestBody
     public IndicatorVO updateIndicator(IndicatorDTO indicatorDTO, Long id) {
+        String range = indicatorDTO.getStandardRange();
+        boolean validFormat = range.matches("(\\d+\\.?\\d*) ~ (\\d+\\.?\\d*);(\\d+\\.?\\d*) ~ (\\d+\\.?\\d*)") ||
+               range.matches("(\\d+\\.?\\d*) ~ (\\d+\\.?\\d*)");
+        AssertUtils.isTrue(validFormat, AppHttpCode.INDICATOR_RANGE_ERROR);
         Indicator indicator = BeanCopyUtils.copyBean(indicatorDTO, Indicator.class);
         indicator.setId(id);
         updateById(indicator);
