@@ -45,6 +45,9 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
     @Autowired
     private Neo4jService neo4jService;
 
+    @Autowired
+    private ChatModelService chatModelService;
+
     @VerifyRequestBody
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public @NonNull Integer addElderIndicators(PatchElderIndicatorDTO indicators) {
@@ -94,6 +97,8 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
             elderIndicator.setStandardRange(indicatorService.getStandardRange(user.getSex(), indicator.getStandardRange()));
             if (!UserConstants.USER_INDICATOR_NORMAL.equals(elderIndicator.getNormal())) {
                 SuggestionDetailVO suggestion = neo4jService.getSuggestion(indicatorId, elderIndicator.getNormal());
+                String aiSuggestion = chatModelService.generate(elderIndicator.getIndicatorName(), UserConstants.USER_INDICATOR_HIGH);
+                suggestion.setChatModelSuggestion(aiSuggestion);
                 elderIndicator.setSuggestion(suggestion);
             }
         }

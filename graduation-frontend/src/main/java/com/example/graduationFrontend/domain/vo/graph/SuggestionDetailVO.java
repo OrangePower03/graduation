@@ -23,4 +23,6 @@ public class SuggestionDetailVO extends BaseVO {
     private List<FoodVO> recommendFoods; // 推荐食物
 
     private List<FoodVO> unrecommendFoods; // 不推荐食物
+
+    private String chatModelSuggestion; // 大模型生成的建议
 }

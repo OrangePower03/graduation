@@ -318,6 +318,15 @@ table th {
         margin: 0 auto;
     }
 
+    /* 为内容容器添加样式 */
+.suggestion-details-container {
+    max-height: 400px; /* 设置容器的最大高度 */
+    overflow-y: auto;  /* 当内容超出时，显示垂直滚动条 */
+    padding: 10px;     /* 可选的内边距 */
+    border: 1px solid #ddd; /* 可选的边框 */
+    border-radius: 5px; /* 可选的圆角 */
+}
+
 
     </style>
 </head>
@@ -457,11 +466,22 @@ table th {
         document.getElementById('indicatorDetailModal').style.display = 'none';
     }
 
+    function fetchWithTimeout(url, options, timeout = 50000) {
+        // 创建一个超时的 Promise
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('请求超时')), timeout)
+        );
+
+        // 使用 Promise.race 来同时执行 fetch 和超时的 Promise
+        return Promise.race([fetch(url, options), timeoutPromise]);
+    }
+
     function openForm(button) {
         const checkTime = button.getAttribute('checkTime');
         const elderId = document.getElementById('elderIdTd').innerText;
 
-        fetch(`/elder/indicator/detail?checkTime=${checkTime}`)
+        // fetch(`/elder/indicator/detail?checkTime=${checkTime}`)
+        fetchWithTimeout(`/elder/indicator/detail?checkTime=${checkTime}`, { method: 'GET' }, 1000000)
         .then(response => response.json())  // 假设返回的是 JSON 格式的数据
         .then(data => {
             // 将数据渲染到浮窗的表格中
@@ -512,6 +532,7 @@ table th {
         document.getElementById("indicatorDetailModal").style.display = "block";
     }
 
+
     // 打开建议详情浮动窗口
     function openSuggestionForm(button) {
         const suggestion = JSON.parse(button.getAttribute('data-suggestion'));
@@ -522,24 +543,28 @@ table th {
         var lifeSuggestion = suggestion.lifeSuggestion
         var recommendFoods = suggestion.recommendFoods
         var unrecommendFoods = suggestion.unrecommendFoods
+        var chatModelSuggestion = suggestion.chatModelSuggestion
         // 渲染建议的详细信息
         const suggestionDetails = document.getElementById("suggestionDetails");
         suggestionDetails.innerHTML = `
-            <p><strong>症状名称:</strong> ${symptomName}</p>
-            <p><strong>诱发症状:</strong> ${induced}</p>
-            <p><strong>生活建议:</strong> ${lifeSuggestion}</p>
-            <h4>推荐食物:</h4>
-            <p>
-                ${recommendFoods.map(food => `${food.category}: ${food.foods.join(', ')}`).join('<br>')}
-            </p>
+            <div class="suggestion-details-container">
+                <p><strong>症状名称:</strong> ${symptomName}</p>
+                <p><strong>诱发症状:</strong> ${induced}</p>
+                <p><strong>生活建议:</strong> ${lifeSuggestion}</p>
+                <h4>推荐食物:</h4>
+                <p>
+                    ${recommendFoods.map(food => `${food.category}: ${food.foods.join(', ')}`).join('<br>')}
+                </p>
 
-            <h4>不推荐食物:</h4>
-            <p>
-                ${unrecommendFoods.map(food => `${food.category}: ${food.foods.join(', ')}`).join('<br>')}
-            </p>
-
-
+                <h4>不推荐食物:</h4>
+                <p>
+                    ${unrecommendFoods.map(food => `${food.category}: ${food.foods.join(', ')}`).join('<br>')}
+                </p>
+                <h4>大模型建议:</h4>
+                <p>${chatModelSuggestion.replace(/\n/g, '<br>')}</p>
+            </div>
         `;
+
 
         // 显示建议浮动窗口
         document.getElementById("suggestionModal").style.display = "flex";
