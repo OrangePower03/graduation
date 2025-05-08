@@ -13,7 +13,15 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ElderBaseIndicatorVO extends BaseVO {
+    Long id;
+
     String checkTime;
 
     Integer normal;
+
+    Double value;
+
+    Long indicatorId;
+
+    String indicatorName;
 }

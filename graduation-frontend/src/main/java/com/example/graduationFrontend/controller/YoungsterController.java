@@ -49,6 +49,17 @@ public class YoungsterController extends BaseController {
         return getElderIndicatorPage(session, elderDTO, model, elderId, 1);
     }
 
+    @GetMapping("/indicator/{elderId}/delete/{id}")
+    public String deleteElderIndicator(HttpSession session, ElderDTO elderDTO, Model model, @PathVariable("elderId") Long elderId, @PathVariable("id") Long id) {
+        String token = DataUtils.getUserToken(session);
+        Request request = buildRequest("/indicator/elder/" + elderId + "/" + id, token, null, HttpMethod.DELETE, null);
+        ResponseResult<Void> result = sendRequest(request);
+        if (result.isSuccess()) {
+            return getElderIndicatorPage(session, elderDTO, model, elderId, 1);
+        }
+        throw new ErrorException(result);
+    }
+
     @GetMapping("/indicator/{elderId}/{pageNum}")
     public String getElderIndicatorPage(HttpSession session, ElderDTO elderDTO, Model model, @PathVariable Long elderId, @PathVariable Integer pageNum) {
         String token = DataUtils.getUserToken(session);

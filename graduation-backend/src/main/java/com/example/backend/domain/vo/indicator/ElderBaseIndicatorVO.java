@@ -13,7 +13,15 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ElderBaseIndicatorVO extends BaseVO {
+    Long id; // 老年人指标主键
+
     Date checkTime;
 
     Integer normal; // 所有的指标是否正常
+
+    Double value;
+
+    Long indicatorId;
+
+    String indicatorName;
 }

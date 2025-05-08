@@ -21,6 +21,7 @@ import com.example.backend.mapper.SysUserMapper;
 import com.example.backend.utils.AssertUtils;
 import com.example.backend.utils.PageUtils;
 import com.example.backend.utils.bean.BeanCopyUtils;
+import com.example.backend.utils.object.CollectionUtils;
 import com.example.backend.utils.object.DateUtils;
 import com.example.backend.utils.object.ObjectUtils;
 import com.example.backend.utils.security.SecurityUtils;
@@ -51,6 +52,11 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
     @VerifyRequestBody
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public @NonNull Integer addElderIndicators(PatchElderIndicatorDTO indicators) {
+        if (SecurityUtils.isYoungster()) {
+            Long youngsterId = SecurityUtils.getUserId();
+            int cnt = sysUserMapper.containsRelations(youngsterId, indicators.getElderId());
+            AssertUtils.isTrue(cnt > 0, AppHttpCode.RELATION_NOT_FOUND_ERROR);
+        }
         SysUser user = sysUserMapper.selectById(indicators.getElderId());
         AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
         List<ElderIndicator> elderIndicators = new ArrayList<>();
@@ -77,6 +83,10 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
         wrapper.orderByDesc(ElderIndicator::getCheckTime);
         Page<ElderIndicator> page = this.page(PageUtils.getPage(), wrapper);
         PageVO<ElderBaseIndicatorVO> baseIndicator = new PageVO<>(page, ElderBaseIndicatorVO.class);
+        for (ElderBaseIndicatorVO indicatorRow : baseIndicator.getRows()) {
+            Long indicatorId = indicatorRow.getIndicatorId();
+            indicatorRow.setIndicatorName(indicatorService.getIndicator(indicatorId).getName());
+        }
         return new PatchElderIndicatorVO(elderId, baseIndicator);
     }
 
@@ -112,6 +122,15 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
         } else {
             AssertUtils.isEquals(userId, elderId, AppHttpCode.PERMISSION_DENIED_ERROR);
         }
+    }
+
+    public void removeElderIndicator(Long elderId, Long id) {
+        judgePermission(elderId);
+        LambdaQueryWrapper<ElderIndicator> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ElderIndicator::getElderId, elderId);
+        wrapper.eq(ElderIndicator::getId, id);
+        AssertUtils.isFalse(CollectionUtils.isEmpty(list(wrapper)), AppHttpCode.ELDER_INDICATOR_NOT_FOUND_ERROR);
+        removeById(id);
     }
 }
 

@@ -375,6 +375,8 @@ table th {
             <thead>
                 <tr>
                     <th>检查时间</th>
+                    <th>指标名</th>
+                    <th>指标数值</th>
                     <th>状态</th>
                     <th>操作</th>
                 </tr>
@@ -383,9 +385,12 @@ table th {
                 <tr th:each="elder : ${indicators}">
                     <td id="elderIdTd" th:text="${elderId}" style="display: none"></td>
                     <td th:text="${elder.checkTime}"></td>
+                    <td th:text="${elder.indicatorName}"></td>
+                    <td th:text="${elder.value}"></td>
                     <td th:text="${elder.normal == 0 ? '正常' : '异常'}"></td>
                     <td>
                         <button type="button" th:attr="checkTime=${elder.checkTime}" onclick="openForm(this)">查看</button>
+                        <button type="button" th:attr="checkTime=${elder.checkTime}" th:onclick="'window.location.href=\'/youngster/indicator/' + ${elderId} + '/delete/' + ${elder.id} + '\''">删除</button>
                     </td>
                 </tr>
             </tbody>

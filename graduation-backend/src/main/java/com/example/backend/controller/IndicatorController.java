@@ -52,7 +52,7 @@ public class IndicatorController extends BaseController {
     }
 
 
-    @PreAuthorize("@MA.isAdmin()")
+    @PreAuthorize("@MA.isAdminOrYoungster()")
     @PostMapping("/elder")
     public ResponseResult<Integer> addElderIndicators(@RequestBody PatchElderIndicatorDTO indicators) {
         return ok(elderIndicatorService.addElderIndicators(indicators));
@@ -80,5 +80,12 @@ public class IndicatorController extends BaseController {
     @GetMapping("/elder/detail")
     public ResponseResult<List<ElderIndicatorDetailVO>> getElderIndicatorDetail(@RequestParam(value = "checkTime") String checkTime) {
         return ok(elderIndicatorService.getElderIndicatorDetail(SecurityUtils.getUserId(), DateUtils.defaultFormat(checkTime)));
+    }
+
+    @PreAuthorize("@MA.isYoungster()")
+    @DeleteMapping("/elder/{elderId}/{id}")
+    public ResponseResult<Void> removeElderIndicator(@PathVariable Long elderId, @PathVariable Long id) {
+        elderIndicatorService.removeElderIndicator(elderId, id);
+        return ok();
     }
 }

@@ -38,8 +38,9 @@ public class AppHttpCode {
     public static final AppHttpCode PAGE_PARAM_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"分页参数不完全");
     public static final AppHttpCode USER_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该用户");
     public static final AppHttpCode ROLE_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该角色");
-    public static final AppHttpCode RELATION_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"构建关系失败，未找到对应关系，请询问是否申请");
+    public static final AppHttpCode RELATION_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"未找到对应关系");
     public static final AppHttpCode INDICATOR_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该指标");
+    public static final AppHttpCode ELDER_INDICATOR_NOT_FOUND_ERROR = new AppHttpCode(HttpStatus.NOT_FOUND,"不存在该老年人指标");
 
     public static final AppHttpCode RELATION_EXISTS_ERROR = new AppHttpCode(HttpStatus.CONFLICT,"构建关系失败，可能已申请，请指导长辈确认绑定");
 

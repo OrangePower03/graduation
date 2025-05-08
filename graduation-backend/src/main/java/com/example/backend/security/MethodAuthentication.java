@@ -39,4 +39,8 @@ public class MethodAuthentication {
     public boolean isElderOrYoungster() {
         return isRole(ELDER_KEY) || isRole(YOUNGSTER_KEY);
     }
+
+    public boolean isAdminOrYoungster() {
+        return SecurityUtils.isAdmin() || isRole(YOUNGSTER_KEY);
+    }
 }
