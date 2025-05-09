@@ -52,7 +52,7 @@ public class IndicatorController extends BaseController {
     }
 
 
-    @PreAuthorize("@MA.isAdminOrYoungster()")
+    @PreAuthorize("@MA.isAdmin()")
     @PostMapping("/elder")
     public ResponseResult<Integer> addElderIndicators(@RequestBody PatchElderIndicatorDTO indicators) {
         return ok(elderIndicatorService.addElderIndicators(indicators));

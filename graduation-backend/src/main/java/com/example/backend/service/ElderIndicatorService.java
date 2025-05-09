@@ -52,11 +52,11 @@ public class ElderIndicatorService extends ServiceImpl<ElderIndicatorMapper, Eld
     @VerifyRequestBody
     @Transactional(value = "transactionManager", rollbackFor = Exception.class)
     public @NonNull Integer addElderIndicators(PatchElderIndicatorDTO indicators) {
-        if (SecurityUtils.isYoungster()) {
-            Long youngsterId = SecurityUtils.getUserId();
-            int cnt = sysUserMapper.containsRelations(youngsterId, indicators.getElderId());
-            AssertUtils.isTrue(cnt > 0, AppHttpCode.RELATION_NOT_FOUND_ERROR);
-        }
+//        if (SecurityUtils.isYoungster()) {
+//            Long youngsterId = SecurityUtils.getUserId();
+//            int cnt = sysUserMapper.containsRelations(youngsterId, indicators.getElderId());
+//            AssertUtils.isTrue(cnt > 0, AppHttpCode.RELATION_NOT_FOUND_ERROR);
+//        }
         SysUser user = sysUserMapper.selectById(indicators.getElderId());
         AssertUtils.nonNull(user, AppHttpCode.USER_NOT_FOUND_ERROR);
         List<ElderIndicator> elderIndicators = new ArrayList<>();
