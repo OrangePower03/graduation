@@ -31,6 +31,7 @@ public class TestRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+//        controller.graph(false);
 //        System.out.println(chatModelService.generate("红细胞数（RBC）", "高"));
 //        List<Indicator> indicators = indicatorService.list();
 //        for (Indicator indicator : indicators) {
