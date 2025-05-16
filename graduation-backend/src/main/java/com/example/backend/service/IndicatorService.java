@@ -19,7 +19,6 @@ import com.example.backend.utils.web.AppHttpCode;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.util.annotation.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -105,7 +104,7 @@ public class IndicatorService extends ServiceImpl<IndicatorMapper, Indicator> im
         String indicatorRange = sexIndicator.length == 2 ? sexIndicator[elderSex] : sexIndicator[0];
         String[] indicatorArr = indicatorRange.split("~");
         Double value = elderIndicator.getValue();
-        double lowest = Double.parseDouble(indicatorArr[0].strip());
+        double lowest = Double.parseDouble(indicatorArr[0].strip().substring(2));
         double highest = Double.parseDouble(indicatorArr[1].strip());
         if (lowest > value) {
             return UserConstants.USER_INDICATOR_LOW;
